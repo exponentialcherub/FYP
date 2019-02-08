@@ -1,5 +1,3 @@
-var voxels = [];
-
 document.addEventListener('DOMContentLoaded', function () {
     initScene();
 });
@@ -42,23 +40,10 @@ var initScene = function () {
     document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
     // TODO: Change this/ move it, above.
 
-    var material = new BABYLON.StandardMaterial("material1",scene);
-    material.diffuseTexture = new BABYLON.Texture("dirt.jpg",scene);
-    // TODO: Specular won't turn off.
-    material.specularColour = new BABYLON.Color3(0, 0, 0);
-    material.backFaceCulling = true;
+    var chunkManager = new ChunkManager(scene, 16);
     
-    var i, j;
-    for(i = 0; i < 20; i++) {
-        for(j = 0; j < 20; j++) {
-            var box = BABYLON.Mesh.CreateBox("Box", 1.0, scene);
-            box.material = material;
-            box.position = new BABYLON.Vector3(i-10, 0, j-10);
-        }
-    }
-    
-
     var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
+    light.intensity = 100;
 
     engine.runRenderLoop(function () {
         scene.render();
