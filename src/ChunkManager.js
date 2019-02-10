@@ -20,6 +20,31 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
             this.chunks[i] = chunk;
         }
     }
+
+    // Left click, destroy.
+    window.addEventListener('click', function()
+    {
+        var pickResult = scene.pick(window.innerWidth/2, window.innerHeight/2); 
+        if(!pickResult.hit)
+        {
+            return;
+        }
+        // TODO: is this the best way? Need to also remove block from chunk object..
+        // Perhaps add method to to chunk which will also dispose of mesh.
+        // Can use ids to match.
+        pickResult.pickedMesh.dispose();
+    });
+    // Right click, place block.
+    window.addEventListener('contextmenu', function()
+    {
+        var pickResult = scene.pick(window.innerWidth/2, window.innerHeight/2);
+        if(!pickResult.hit)
+        {
+            return;
+        }
+
+        
+    });
 }
 
 ChunkManager.prototype.populateBlockCache = function(scene)
