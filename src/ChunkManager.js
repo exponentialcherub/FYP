@@ -10,10 +10,11 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
     this.populateBlockCache(scene);
 
     this.chunks = new Array();
+    this.noChunks = worldSize / chunkSize;
 
-    for(var i = 0; i < worldSize / chunkSize; i++)
+    for(var i = 0; i < this.noChunks; i++)
     {
-        for(var j = 0; j < worldSize / chunkSize; j++)
+        for(var j = 0; j < this.noChunks; j++)
         {
             var chunk = new Chunk(i, this.blockCache, 0,
                 new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, -8, -worldSize / 2 + j * chunkSize), scene);
@@ -21,30 +22,60 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
         }
     }
 
-    // Left click, destroy.
-    window.addEventListener('click', function()
+    var _this = this;
+    window.addEventListener('mousedown', function(e)
     {
         var pickResult = scene.pick(window.innerWidth/2, window.innerHeight/2); 
         if(!pickResult.hit)
         {
             return;
         }
-        // TODO: is this the best way? Need to also remove block from chunk object..
-        // Perhaps add method to to chunk which will also dispose of mesh.
-        // Can use ids to match.
-        pickResult.pickedMesh.dispose();
-    });
-    // Right click, place block.
-    window.addEventListener('contextmenu', function()
-    {
-        var pickResult = scene.pick(window.innerWidth/2, window.innerHeight/2);
-        if(!pickResult.hit)
+        if(e.button == 0)
         {
-            return;
-        }
+            // Left click, destroy.
 
-        
+            for(var i = 0; i < _this.chunks.length; i++)
+            {
+                if(_this.chunks[i].hasBlock(pickResult.pickedMesh.position))
+                {
+                    console.log("hi");
+                    _this.chunks[i].removeBlock(pickResult.pickedMesh.position);
+                }
+            }
+        }
+        else if(e.button == 2)
+        {
+            // Right click, add block.
+            for(var i = 0; i < _this.chunks.length; i++)
+            { 
+                if(_this.chunks[i].hasBlock(pickResult.pickedMesh.position))
+                {
+                    _this.addBlock(pickResult);
+                    break;
+                }
+            }
+        }
     });
+}
+
+ChunkManager.prototype.addBlock = function(pickResult)
+{
+    var blockPosition = pickResult.pickedMesh.position;
+    var newPosition = new BABYLON.Vector3(blockPosition.x, blockPosition.y, blockPosition.z);
+    var normal = pickResult.getNormal();
+    normal.normalize();
+
+    newPosition.x += normal.x;
+    newPosition.y += normal.y;
+    newPosition.z += normal.z;
+
+    for(var i = 0; i < this.noChunks; i++)
+    {
+        if(this.chunks[i].hasBlock(newPosition))
+        {
+            this.chunks[i].addBlock(newPosition, 0);
+        }
+    }
 }
 
 ChunkManager.prototype.populateBlockCache = function(scene)
