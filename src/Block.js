@@ -7,6 +7,7 @@ Block = function(position, boxToCopy, id)
     // TODO: May in fact want to just hold block data in here, instead of creating box, create mesh within chunk.
     //       For optimisation
     var box = boxToCopy.createInstance("block" + id);
+    
     box.position = position;
     box.freezeWorldMatrix();
     this.box = box;

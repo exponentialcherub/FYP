@@ -8,6 +8,7 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
 
     this.blockCache = new Array();
     this.populateBlockCache(scene, "assets");
+    this.selector = new BlockSelector(this.blockCache.length);
 
     this.chunks = new Array();
     this.noChunks = worldSize / chunkSize;
@@ -16,7 +17,7 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
     {
         for(var j = 0; j < this.noChunks; j++)
         {
-            var chunk = new Chunk(i, this.blockCache, 0,
+            var chunk = new Chunk(i, this.blockCache, 2,
                 new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, -8, -worldSize / 2 + j * chunkSize), scene);
             this.chunks[i] = chunk;
         }
@@ -37,7 +38,6 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
             {
                 if(_this.chunks[i].hasBlock(pickResult.pickedMesh.position))
                 {
-                    console.log("hi");
                     _this.chunks[i].removeBlock(pickResult.pickedMesh.position);
                 }
             }
@@ -72,7 +72,7 @@ ChunkManager.prototype.addBlock = function(pickResult)
     {
         if(this.chunks[i].hasBlock(newPosition))
         {
-            this.chunks[i].addBlock(newPosition, 0);
+            this.chunks[i].addBlock(newPosition, this.selector.selected);
         }
     }
 }
@@ -81,13 +81,17 @@ ChunkManager.prototype.populateBlockCache = function(scene, path)
 {
     this.blockCache[0] = BABYLON.MeshBuilder.CreateBox("Dirt", 1.0, scene);
     this.blockCache[0].material = CreateMaterial("Dirt", path + "/dirt.png", scene);
+    this.blockCache[0].setEnabled(false);
 
     this.blockCache[1] = BABYLON.MeshBuilder.CreateBox("Wood", 1.0, scene);
     this.blockCache[1].material = CreateMaterial("Wood", path + "/wood.png", scene);
+    this.blockCache[1].setEnabled(false);
 
     this.blockCache[2] = BABYLON.MeshBuilder.CreateBox("Stone", 1.0, scene);
     this.blockCache[2].material = CreateMaterial("Stone", path + "/stone.png", scene);
+    this.blockCache[2].setEnabled(false);
 
     this.blockCache[3] = BABYLON.MeshBuilder.CreateBox("Brick", 1.0, scene);
     this.blockCache[3].material = CreateMaterial("Brick", path + "/brick.png", scene);
+    this.blockCache[3].setEnabled(false);
 }

@@ -25,6 +25,7 @@ Chunk = function(id, blockCache, blockId, chunkPosition, scene, size = 16)
                     this.blocks[i][j][k] = null;
                     continue;
                 }
+
                 this.blocks[i][j][k] = new Block(position, blockCache[blockId], "" + i + j + k);
             }
         }
@@ -40,12 +41,12 @@ Chunk.prototype.hasBlock = function(position)
 Chunk.prototype.addBlock = function(position, blockId)
 {
     var i = position.x - this.min.x;
-    var j = position.y - this.min.y;
+    var j = position.y - this.min.y + 1;
     var k = position.z - this.min.z;
 
     if(this.blocks[i][j][k] == null)
     {
-        this.blocks[i][j][k] = new Block(position, this.blockCache[blockId]);
+        this.blocks[i][j][k] = new Block(position, this.blockCache[blockId], "" + i + j + k);
     }
 }
 
