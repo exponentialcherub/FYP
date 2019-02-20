@@ -7,7 +7,7 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
     }
 
     this.blockCache = new Array();
-    this.populateBlockCache(scene);
+    this.populateBlockCache(scene, "assets");
 
     this.chunks = new Array();
     this.noChunks = worldSize / chunkSize;
@@ -33,7 +33,6 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
         if(e.button == 0)
         {
             // Left click, destroy.
-
             for(var i = 0; i < _this.chunks.length; i++)
             {
                 if(_this.chunks[i].hasBlock(pickResult.pickedMesh.position))
@@ -78,8 +77,17 @@ ChunkManager.prototype.addBlock = function(pickResult)
     }
 }
 
-ChunkManager.prototype.populateBlockCache = function(scene)
+ChunkManager.prototype.populateBlockCache = function(scene, path)
 {
     this.blockCache[0] = BABYLON.MeshBuilder.CreateBox("Dirt", 1.0, scene);
-    this.blockCache[0].material = CreateMaterial("Dirt", "dirt.jpg", scene);
+    this.blockCache[0].material = CreateMaterial("Dirt", path + "/dirt.png", scene);
+
+    this.blockCache[1] = BABYLON.MeshBuilder.CreateBox("Wood", 1.0, scene);
+    this.blockCache[1].material = CreateMaterial("Wood", path + "/wood.png", scene);
+
+    this.blockCache[2] = BABYLON.MeshBuilder.CreateBox("Stone", 1.0, scene);
+    this.blockCache[2].material = CreateMaterial("Stone", path + "/stone.png", scene);
+
+    this.blockCache[3] = BABYLON.MeshBuilder.CreateBox("Brick", 1.0, scene);
+    this.blockCache[3].material = CreateMaterial("Brick", path + "/brick.png", scene);
 }

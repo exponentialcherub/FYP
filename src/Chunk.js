@@ -19,6 +19,12 @@ Chunk = function(id, blockCache, blockId, chunkPosition, scene, size = 16)
                 // TODO: Perhaps chunk position should be the center, consistent with block. Although this makes
                 // more sense when indexing.
                 var position = chunkPosition.add(new BABYLON.Vector3(i, j, k));
+                if(j > size / 2 + 1)
+                {
+                    // Temporary to only popu;ate half of chunk so we can build on. May end up doing this anyway.
+                    this.blocks[i][j][k] = null;
+                    continue;
+                }
                 this.blocks[i][j][k] = new Block(position, blockCache[blockId], "" + i + j + k);
             }
         }
