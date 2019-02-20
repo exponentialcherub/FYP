@@ -41,7 +41,7 @@ Chunk.prototype.hasBlock = function(position)
 Chunk.prototype.addBlock = function(position, blockId)
 {
     var i = position.x - this.min.x;
-    var j = position.y - this.min.y + 1;
+    var j = position.y - this.min.y;
     var k = position.z - this.min.z;
 
     if(this.blocks[i][j][k] == null)
