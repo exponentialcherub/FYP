@@ -19,17 +19,19 @@ Chunk = function(id, blockCache, blockId, chunkPosition, scene, size = 16)
                 // TODO: Perhaps chunk position should be the center, consistent with block. Although this makes
                 // more sense when indexing.
                 var position = chunkPosition.add(new BABYLON.Vector3(i, j, k));
-                if(j > size / 2 + 1)
+                
+                this.blocks[i][j][k] = new Block(position, blockCache[blockId], "" + i + j + k);
+                if(j > size / 2)
                 {
-                    // Temporary to only popu;ate half of chunk so we can build on. May end up doing this anyway.
-                    this.blocks[i][j][k] = null;
+                    // Temporary to only populate half of chunk so we can build on. May end up doing this anyway.
+                    this.blocks[i][j][k].setInactive();
                     continue;
                 }
-
-                this.blocks[i][j][k] = new Block(position, blockCache[blockId], "" + i + j + k);
             }
         }
     }
+
+    this.cullVisibility();
 }
 
 Chunk.prototype.hasBlock = function(position)
@@ -44,10 +46,7 @@ Chunk.prototype.addBlock = function(position, blockId)
     var j = position.y - this.min.y;
     var k = position.z - this.min.z;
 
-    if(this.blocks[i][j][k] == null)
-    {
-        this.blocks[i][j][k] = new Block(position, this.blockCache[blockId], "" + i + j + k);
-    }
+    this.blocks[i][j][k].setActive(this.blockCache[blockId]);
 }
 
 Chunk.prototype.removeBlock = function(position)
@@ -56,6 +55,49 @@ Chunk.prototype.removeBlock = function(position)
     var j = position.y - this.min.y;
     var k = position.z - this.min.z;
 
-    this.blocks[i][j][k].box.dispose();
-    this.blocks[i][j][k] = null;
+    this.blocks[i][j][k].setInactive();
+    this.checkNeighbourVisibility(i, j, k);
+}
+
+Chunk.prototype.checkNeighbourVisibility = function(i, j, k)
+{
+    this.checkBlockVisibility(i - 1, j, k);
+    this.checkBlockVisibility(i + 1, j, k);
+    this.checkBlockVisibility(i, j - 1, k);
+    this.checkBlockVisibility(i, j + 1, k);
+    this.checkBlockVisibility(i, j, k - 1);
+    this.checkBlockVisibility(i, j, k + 1);
+}
+
+Chunk.prototype.checkBlockVisibility = function(i, j, k)
+{
+    if(i == 0 || j == 0 || k == 0 || i == this.size -1 || j == this.size -1 || k == this.size -1 || 
+        !this.blocks[i][j][k].isActive())
+    {
+        return;
+    }
+
+    if(this.blocks[i-1][j][k].isActive() && this.blocks[i+1][j][k].isActive() && this.blocks[i][j-1][k].isActive() &&
+       this.blocks[i][j+1][k].isActive() && this.blocks[i][j][k-1].isActive() && this.blocks[i][j][k+1].isActive())
+    {
+        this.blocks[i][j][k].setVisibility(false);
+    }
+    else
+    {
+        this.blocks[i][j][k].setVisibility(true)
+    }
+}
+
+Chunk.prototype.cullVisibility = function()
+{
+    for(var i = 0; i < this.size; i++)
+    {
+        for(var j = 0; j < this.size; j++)
+        {
+            for(var k = 0; k < this.size; k++)
+            {
+                this.checkBlockVisibility(i, j, k);
+            }
+        }
+    }
 }
