@@ -71,7 +71,7 @@ Chunk.prototype.checkNeighbourVisibility = function(i, j, k)
 
 Chunk.prototype.checkBlockVisibility = function(i, j, k)
 {
-    if(i == 0 || j == 0 || k == 0 || i == this.size -1 || j == this.size -1 || k == this.size -1 || 
+    if(i <= 0 || j <= 0 || k <= 0 || i >= this.size - 1 || j >= this.size - 1 || k >= this.size - 1 || 
         !this.blocks[i][j][k].isActive())
     {
         return;
@@ -84,7 +84,7 @@ Chunk.prototype.checkBlockVisibility = function(i, j, k)
     }
     else
     {
-        this.blocks[i][j][k].setVisibility(true)
+        this.blocks[i][j][k].setVisibility(true);
     }
 }
 

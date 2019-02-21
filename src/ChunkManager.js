@@ -11,6 +11,10 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
     this.selector = new BlockSelector(this.blockCache.length);
 
     this.chunks = new Array();
+    // Number of chunks in one dimension (i.e. this doesn't make any sense).
+    // Either:
+    //     Need new name or, 
+    //     Create chunks differently
     this.noChunks = worldSize / chunkSize;
 
     for(var i = 0; i < this.noChunks; i++)
@@ -19,7 +23,7 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
         {
             var chunk = new Chunk(i, this.blockCache, 2,
                 new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, -8, -worldSize / 2 + j * chunkSize), scene);
-            this.chunks[i] = chunk;
+            this.chunks[i * this.noChunks + j] = chunk;
         }
     }
 
@@ -68,7 +72,7 @@ ChunkManager.prototype.addBlock = function(pickResult)
     newPosition.y += normal.y;
     newPosition.z += normal.z;
 
-    for(var i = 0; i < this.noChunks; i++)
+    for(var i = 0; i < this.chunks.length; i++)
     {
         if(this.chunks[i].hasBlock(newPosition))
         {
