@@ -52,7 +52,7 @@ var initScene = function () {
     document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
     // TODO: Change this/ move it, above.
 
-    var chunkManager = new ChunkManager(scene, 16);
+    var chunkManager = new ChunkManager(scene, 32);
     
     var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
     light.intensity = 100;

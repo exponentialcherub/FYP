@@ -20,6 +20,7 @@ Block.prototype.setActive = function(boxToCopy = null)
         this.box = boxToCopy.createInstance(name);
         this.box.position = this.position;
         this.box.freezeWorldMatrix();
+        this.box.checkCollisions = true;
     }
 }
 
