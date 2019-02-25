@@ -1,4 +1,4 @@
-const buttonNumber1 = 49;
+const qkeycode = 113;
 
 BlockSelector = function(noMaterials)
 {
@@ -8,7 +8,8 @@ BlockSelector = function(noMaterials)
     var _this = this;
     window.addEventListener("keypress", function(e)
     {
-        if(e.keyCode == buttonNumber1)
+        console.log(e.keyCode);
+        if(e.keyCode == qkeycode)
         {
             if(_this.selected == noMaterials - 1)
             {

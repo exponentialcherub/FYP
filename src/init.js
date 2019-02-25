@@ -23,6 +23,8 @@ var initScene = function () {
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
+    // Player size
+    camera.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
     //camera.applyGravity = true;
     //camera._needMoveForGravity = true;
 
