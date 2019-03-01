@@ -16,7 +16,7 @@ var initScene = function () {
     var scene = new BABYLON.Scene(engine);
     scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.OimoJSPlugin());
     scene.collisionsEnabled = true;
-    scene.clearColor = new BABYLON.Color3.White();
+    scene.clearColor = new BABYLON.Color3(135/255, 206/255, 235/255);
 
     var camera = new BABYLON.UniversalCamera('camera1', new BABYLON.
     Vector3(5, 5, -10), scene);
@@ -54,7 +54,14 @@ var initScene = function () {
     document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
     // TODO: Change this/ move it, above.
 
-    var chunkManager = new ChunkManager(scene, 32);
+    var material = new BABYLON.StandardMaterial("textureatlas", scene);
+    var textureAtlas = new BABYLON.Texture("assets/texturepack.png", scene);
+    material.specularColor = BABYLON.Color3.Black();
+    material.diffuseTexture = textureAtlas;
+    material.backFaceCulling = true;
+    material.freeze();
+
+    var chunkManager = new ChunkManager(scene, material, 128, 16);
     
     var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
     light.intensity = 100;

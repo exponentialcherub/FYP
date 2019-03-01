@@ -1,52 +1,24 @@
-// TODO: This class (object?) may be useless, may just need box. Although may be useful in future when using mesh.
-
-Block = function(position, boxToCopy, id) 
+Block = function(position, id, blockType) 
 {
     this.position = position;
-
-    // TODO: May in fact want to just hold block data in here, instead of creating box, create mesh within chunk.
-    //       For optimisation
-    var box = boxToCopy.createInstance("block" + id);
-    box.position = position;
-    box.freezeWorldMatrix();
-    this.box = box;
-    this.box.checkCollisions = true;
+    this.active = true;
+    this.id = id;
+    this.type = blockType;
 }
 
-Block.prototype.setActive = function(boxToCopy = null)
+Block.prototype.setActive = function(blockType)
 {
-    if(this.box == null)
-    {
-        this.box = boxToCopy.createInstance(name);
-        this.box.position = this.position;
-        this.box.freezeWorldMatrix();
-        this.box.checkCollisions = true;
-    }
+    this.active = true;
+
+    this.type = blockType;
 }
 
 Block.prototype.setInactive = function()
 {
-    if(this.box != null)
-    {
-        this.box.dispose();
-        this.box = null;
-    }
+    this.active = false;
 }
 
 Block.prototype.isActive = function()
 {
-    return this.box != null;
-}
-
-Block.prototype.setVisibility = function(visible)
-{
-    if(this.isActive())
-    {
-        this.box.setEnabled(visible);
-    }
-}
-
-Block.prototype.name = function()
-{
-    return this.box.name;
+    return this.active;
 }

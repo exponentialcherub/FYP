@@ -1,4 +1,4 @@
-ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
+ChunkManager = function(scene, material, worldSize = 256, chunkSize = 16)
 {
     if(worldSize < chunkSize)
     {
@@ -6,9 +6,7 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
         worldSize = chunkSize;
     }
 
-    this.blockCache = new Array();
-    this.populateBlockCache(scene, "assets");
-    this.selector = new BlockSelector(this.blockCache.length);
+    this.selector = new BlockSelector();
 
     this.chunks = new Array();
     // Number of chunks in one dimension (i.e. this doesn't make any sense).
@@ -21,8 +19,8 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
     {
         for(var j = 0; j < this.noChunks; j++)
         {
-            var chunk = new Chunk(i, this.blockCache, 2,
-                new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, -8, -worldSize / 2 + j * chunkSize), scene);
+            var chunk = new Chunk(i, 1,
+                new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, -8, -worldSize / 2 + j * chunkSize), scene, material, chunkSize);
             this.chunks[i * this.noChunks + j] = chunk;
         }
     }
@@ -40,9 +38,11 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
             // Left click, destroy.
             for(var i = 0; i < _this.chunks.length; i++)
             {
-                if(_this.chunks[i].hasBlock(pickResult.pickedMesh.position))
+                var ret = _this.chunks[i].hasBlock(pickResult.pickedPoint, pickResult.getNormal(true, false)); 
+                if(ret.result)
                 {
-                    _this.chunks[i].removeBlock(pickResult.pickedMesh.position);
+                    _this.chunks[i].removeBlock(ret.pos);
+                    break;
                 }
             }
         }
@@ -51,9 +51,11 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
             // Right click, add block.
             for(var i = 0; i < _this.chunks.length; i++)
             { 
-                if(_this.chunks[i].hasBlock(pickResult.pickedMesh.position))
+                var normal = pickResult.getNormal(true, false);
+                var ret = _this.chunks[i].hasBlock(pickResult.pickedPoint, normal); 
+                if(ret.result)
                 {
-                    _this.addBlock(pickResult);
+                    _this.addBlock(ret.pos, normal);
                     break;
                 }
             }
@@ -61,11 +63,9 @@ ChunkManager = function(scene, worldSize = 256, chunkSize = 16)
     });
 }
 
-ChunkManager.prototype.addBlock = function(pickResult)
+ChunkManager.prototype.addBlock = function(blockPosition, normal)
 {
-    var blockPosition = pickResult.pickedMesh.position;
     var newPosition = new BABYLON.Vector3(blockPosition.x, blockPosition.y, blockPosition.z);
-    var normal = pickResult.getNormal();
     normal.normalize();
 
     newPosition.x += normal.x;
@@ -74,28 +74,10 @@ ChunkManager.prototype.addBlock = function(pickResult)
 
     for(var i = 0; i < this.chunks.length; i++)
     {
-        if(this.chunks[i].hasBlock(newPosition))
+        var ret = this.chunks[i].hasBlock(newPosition, normal);
+        if(ret.result)
         {
             this.chunks[i].addBlock(newPosition, this.selector.selected);
         }
     }
-}
-
-ChunkManager.prototype.populateBlockCache = function(scene, path)
-{
-    this.blockCache[0] = BABYLON.MeshBuilder.CreateBox("Dirt", 1.0, scene);
-    this.blockCache[0].material = CreateMaterial("Dirt", path + "/dirt.png", scene);
-    this.blockCache[0].setEnabled(false);
-
-    this.blockCache[1] = BABYLON.MeshBuilder.CreateBox("Wood", 1.0, scene);
-    this.blockCache[1].material = CreateMaterial("Wood", path + "/wood.png", scene);
-    this.blockCache[1].setEnabled(false);
-
-    this.blockCache[2] = BABYLON.MeshBuilder.CreateBox("Stone", 1.0, scene);
-    this.blockCache[2].material = CreateMaterial("Stone", path + "/stone.png", scene);
-    this.blockCache[2].setEnabled(false);
-
-    this.blockCache[3] = BABYLON.MeshBuilder.CreateBox("Brick", 1.0, scene);
-    this.blockCache[3].material = CreateMaterial("Brick", path + "/brick.png", scene);
-    this.blockCache[3].setEnabled(false);
 }
