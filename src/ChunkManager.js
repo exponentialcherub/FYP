@@ -1,4 +1,4 @@
-ChunkManager = function(scene, material, worldSize = 256, chunkSize = 16)
+ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSize = 16)
 {
     if(worldSize < chunkSize)
     {
@@ -6,7 +6,7 @@ ChunkManager = function(scene, material, worldSize = 256, chunkSize = 16)
         worldSize = chunkSize;
     }
 
-    this.selector = new BlockSelector();
+    this.selector = blockSelector;
 
     this.chunks = new Array();
     // Number of chunks in one dimension (i.e. this doesn't make any sense).

@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initScene();
 });
 
+var inGame = false;
 
 var initScene = function () {
     var canvas = document.getElementById('canvas');
@@ -17,7 +18,7 @@ var initScene = function () {
     scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.OimoJSPlugin());
     scene.collisionsEnabled = true;
     scene.clearColor = new BABYLON.Color3(135/255, 206/255, 235/255);
-
+    
     var camera = new BABYLON.UniversalCamera('camera1', new BABYLON.
     Vector3(5, 5, -10), scene);
     camera.setTarget(BABYLON.Vector3.Zero());
@@ -33,7 +34,7 @@ var initScene = function () {
     // Request pointer lock
     canvas.addEventListener("click", function(evt) {
         canvas.requestPointerLock = canvas.requestPointerLock || canvas.msRequestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-        if (canvas.requestPointerLock) {
+        if (canvas.requestPointerLock && inGame) {
             canvas.requestPointerLock();
         }
     }, false);
@@ -53,7 +54,21 @@ var initScene = function () {
     document.addEventListener("mozpointerlockchange", pointerlockchange, false);
     document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
     // TODO: Change this/ move it, above.
+    
+    var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
+    light.intensity = 100;
 
+    var gui = new GUI(createWorld, scene);
+
+    engine.runRenderLoop(function () {
+        scene.render();
+
+        gui.update();
+    });
+}
+
+var createWorld = function(scene)
+{
     var material = new BABYLON.StandardMaterial("textureatlas", scene);
     var textureAtlas = new BABYLON.Texture("assets/texturepack.png", scene);
     material.specularColor = BABYLON.Color3.Black();
@@ -61,12 +76,7 @@ var initScene = function () {
     material.backFaceCulling = true;
     material.freeze();
 
-    var chunkManager = new ChunkManager(scene, material, 128, 16);
-    
-    var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
-    light.intensity = 100;
+    var chunkManager = new ChunkManager(scene, material, new BlockSelector(), 128, 16);
 
-    engine.runRenderLoop(function () {
-        scene.render();
-    });
+    inGame = true;
 }
