@@ -10,13 +10,15 @@ BlockSelector = function()
     {
         if(e.keyCode == qkeycode)
         {
-            if(_this.selected == this.noMaterials - 1)
+            if(_this.selected == _this.noMaterials - 1)
             {
                 _this.selected = 0;
                 return;
             }
 
             _this.selected++;
+
+            console.log(_this.selected);
         }
     });
 }

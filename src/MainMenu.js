@@ -1,4 +1,4 @@
-MainMenu = function(texture, createWorldFunc, scene)
+MainMenu = function(texture, createWorldFunc, world, scene)
 {
     this.active = false;
 
@@ -22,7 +22,7 @@ MainMenu = function(texture, createWorldFunc, scene)
     var _this = this;
     this.createWorldBut.onPointerUpObservable.add(function() {
         _this.turnOff(texture);
-        createWorldFunc(scene);
+        createWorldFunc(scene, world);
     });
 }
 

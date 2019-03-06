@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initScene();
 });
 
-var inGame = false;
-
 var initScene = function () {
     var canvas = document.getElementById('canvas');
     var engine = new BABYLON.Engine(canvas, true);
@@ -26,15 +24,16 @@ var initScene = function () {
     camera.checkCollisions = true;
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
-    //camera.applyGravity = true;
-    //camera._needMoveForGravity = true;
+    
+    var world = new World();
+    var gui = new GUI(createWorld, world, scene);
 
     // Taken from http://www.pixelcodr.com/tutos/shooter/shooter.html.
     var _this = this;
     // Request pointer lock
     canvas.addEventListener("click", function(evt) {
         canvas.requestPointerLock = canvas.requestPointerLock || canvas.msRequestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-        if (canvas.requestPointerLock && inGame) {
+        if (canvas.requestPointerLock && world.inGame) {
             canvas.requestPointerLock();
         }
     }, false);
@@ -58,8 +57,6 @@ var initScene = function () {
     var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
     light.intensity = 100;
 
-    var gui = new GUI(createWorld, scene);
-
     engine.runRenderLoop(function () {
         scene.render();
 
@@ -67,16 +64,7 @@ var initScene = function () {
     });
 }
 
-var createWorld = function(scene)
+var createWorld = function(scene, world)
 {
-    var material = new BABYLON.StandardMaterial("textureatlas", scene);
-    var textureAtlas = new BABYLON.Texture("assets/texturepack.png", scene);
-    material.specularColor = BABYLON.Color3.Black();
-    material.diffuseTexture = textureAtlas;
-    material.backFaceCulling = true;
-    material.freeze();
-
-    var chunkManager = new ChunkManager(scene, material, new BlockSelector(), 128, 16);
-
-    inGame = true;
+    world.createWorld(scene);
 }
