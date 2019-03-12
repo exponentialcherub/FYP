@@ -23,37 +23,33 @@ var initScene = function () {
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
     // Player size
-    camera.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
+    camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     
     var world = new World();
     var gui = new GUI(createWorld, world, scene);
 
-    // Taken from http://www.pixelcodr.com/tutos/shooter/shooter.html.
-    var _this = this;
     // Request pointer lock
-    canvas.addEventListener("click", function(evt) {
+    canvas.addEventListener("click", function(e) {
         canvas.requestPointerLock = canvas.requestPointerLock || canvas.msRequestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-        if (canvas.requestPointerLock && world.inGame) {
+        if (canvas.requestPointerLock && world.inGame)
+        {
             canvas.requestPointerLock();
         }
     }, false);
 
-    // Event listener when the pointerlock is updated.
-    var pointerlockchange = function (event) {
-        _this.controlEnabled = (document.mozPointerLockElement === canvas || document.webkitPointerLockElement === canvas || document.msPointerLockElement === canvas || document.pointerLockElement === canvas);
-        if (!_this.controlEnabled) {
-            _this.camera.detachControl(canvas);
-        } else {
-            _this.camera.attachControl(canvas);
+    var pointerLockChange = function() {
+        if(!document.pointerLockElement)
+        {
+            gui.pause();
+            world.inGame = false;
         }
     };
-
-    document.addEventListener("pointerlockchange", pointerlockchange, false);
-    document.addEventListener("mspointerlockchange", pointerlockchange, false);
-    document.addEventListener("mozpointerlockchange", pointerlockchange, false);
-    document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
-    // TODO: Change this/ move it, above.
     
+    document.addEventListener("pointerlockchange", pointerLockChange, false);
+    document.addEventListener("mspointerlockchange", pointerLockChange, false);
+    document.addEventListener("mozpointerlockchange", pointerLockChange, false);
+    document.addEventListener("webkitpointerlockchange", pointerLockChange, false);
+
     var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
     light.intensity = 100;
 

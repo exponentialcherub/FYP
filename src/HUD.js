@@ -34,6 +34,8 @@ HUD.prototype.turnOff = function(texture)
 {
     texture.removeControl(this.crosshair);
     texture.removeControl(this.textureImage);
+
+    this.active = false;
 }
 
 HUD.prototype.updateMaterial = function()
