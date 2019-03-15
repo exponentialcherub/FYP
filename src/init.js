@@ -37,24 +37,18 @@ var initScene = function () {
         }
     }, false);
 
-    var pointerLockChange = function() {
-        if(!document.pointerLockElement)
-        {
-            gui.pause();
-            world.inGame = false;
-        }
-    };
-    
-    document.addEventListener("pointerlockchange", pointerLockChange, false);
-    document.addEventListener("mspointerlockchange", pointerLockChange, false);
-    document.addEventListener("mozpointerlockchange", pointerLockChange, false);
-    document.addEventListener("webkitpointerlockchange", pointerLockChange, false);
-
     var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
     light.intensity = 100;
 
     engine.runRenderLoop(function () {
         scene.render();
+
+        // Render loop order important here! This is due to hud.quit value change in gui.update().
+        // TODO: Maybe be better to does this via an event? Amongst other gui events.
+        if(gui.quit())
+        {
+            world.dispose();
+        }
 
         gui.update();
     });

@@ -17,3 +17,10 @@ World.prototype.createWorld = function(scene)
 
     this.inGame = true;
 }
+
+World.prototype.dispose = function()
+{
+    this.chunkManager.dispose();
+    this.chunkManager = null;
+    this.inGame = false;
+}

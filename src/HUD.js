@@ -1,6 +1,7 @@
-HUD = function(blockSelector)
+HUD = function(blockSelector, texture)
 {
     this.active = false;
+    this.quit = false;
 
     var crosshair = new BABYLON.GUI.Image("crosshair", "assets/mccrosshair.png");
     crosshair.width = 0.04;
@@ -17,6 +18,39 @@ HUD = function(blockSelector)
     textureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
     this.textureImage = textureImage;
 
+    var save = BABYLON.GUI.Button.CreateSimpleButton("save", "Save");
+    save.width = '100px';
+    save.height = '50px';
+    save.color = "black";
+    save.fontSize = 20;
+    save.top = "-40%";
+    save.left = "30%";
+    save.background = "white";
+    save.borderColour = "black";
+    this.saveBut = save;
+
+    var saveAndQuit = BABYLON.GUI.Button.CreateSimpleButton("savequit", "Save & Quit");
+    saveAndQuit.width = '100px';
+    saveAndQuit.height = '50px';
+    saveAndQuit.color = "black";
+    saveAndQuit.fontSize = 20;
+    saveAndQuit.top = "-40%";
+    saveAndQuit.left = "40%";
+    saveAndQuit.background = "white";
+    saveAndQuit.borderColour = "black";
+    this.saveAndQuitBut = saveAndQuit;
+
+    var _this = this;
+    this.saveBut.onPointerUpObservable.add(function() {
+        // TODO: Save
+    });
+    this.saveAndQuitBut.onPointerUpObservable.add(function() {
+        // TODO: Save and quit
+
+        _this.turnOff(texture);
+        _this.quit = true;
+    });
+
     this.prevSelected = 0; 
 
     this.updateMaterial();
@@ -26,14 +60,19 @@ HUD.prototype.turnOn = function(texture)
 {
     texture.addControl(this.crosshair);
     texture.addControl(this.textureImage);
+    texture.addControl(this.saveBut);
+    texture.addControl(this.saveAndQuitBut);
 
     this.active = true;
+    this.quit = false;
 }
 
 HUD.prototype.turnOff = function(texture)
 {
     texture.removeControl(this.crosshair);
     texture.removeControl(this.textureImage);
+    texture.removeControl(this.saveBut);
+    texture.removeControl(this.saveAndQuitBut);
 
     this.active = false;
 }

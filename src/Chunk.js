@@ -4,7 +4,7 @@ Chunk = function(id, blockId, chunkPosition, scene, material, size = 16)
     this.blocks = new Array();
     this.mesh = new BABYLON.Mesh("chunk" + id, scene);
     this.material = material;
-    this.min = chunkPosition; //.add(new BABYLON.Vector3(-0.5, -0.5, -0.5));
+    this.min = chunkPosition;
     this.max = chunkPosition.add(new BABYLON.Vector3(size - 1, size - 1, size - 1));
 
     for(var i = 0; i < size; i++)
@@ -254,4 +254,10 @@ Chunk.prototype.regenerateMesh = function()
     this.mesh = new BABYLON.Mesh(name, scene);
 
     this.generateMesh();
+}
+
+Chunk.prototype.dispose = function()
+{
+    this.mesh.dispose();
+    this.mesh = null;
 }

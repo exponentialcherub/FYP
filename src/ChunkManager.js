@@ -81,3 +81,11 @@ ChunkManager.prototype.addBlock = function(blockPosition, normal)
         }
     }
 }
+
+ChunkManager.prototype.dispose = function()
+{
+    for(var i = 0; i < this.chunks.length; i++)
+    {
+        this.chunks[i].dispose();
+    }   
+}

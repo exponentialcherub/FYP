@@ -8,6 +8,7 @@ BlockSelector = function()
     var _this = this;
     window.addEventListener("keypress", function(e)
     {
+        console.log(e.keyCode);
         if(e.keyCode == qkeycode)
         {
             if(_this.selected == _this.noMaterials - 1)

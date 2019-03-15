@@ -1,26 +1,54 @@
+const pKeyCode = 112;
+
 GUI = function(createWorldFunc, world, scene)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
 
     this.mainMenu = new MainMenu(this.guiTexture, createWorldFunc, world, scene);
     this.mainMenu.turnOn(this.guiTexture);
-    this.hud = new HUD(world.blockSelector);
-    this.pauseMenu = new PauseMenu(this.guiTexture, world);
+    this.hud = new HUD(world.blockSelector, this.guiTexture);
+    // For when a player is in world and wants to switch the HUD off.
+    this.showHud = true;
+
+    var _this = this;
+    window.addEventListener("keypress", function(e)
+    {
+        if(e.keyCode == pKeyCode && world.inGame)
+        {
+            if(_this.hud.active)
+            {
+                _this.showHud = false;
+                _this.hud.turnOff(_this.guiTexture);
+            }
+            else
+            {
+                _this.showHud = true;
+                _this.hud.turnOn(_this.guiTexture);
+            }
+        }
+    });
 }
 
 GUI.prototype.update = function()
 {
-    if(!this.pauseMenu.active && !this.mainMenu.active && !this.hud.active)
+    if(this.hud.quit)
     {
-        this.hud.turnOn(this.guiTexture); 
+        this.mainMenu.turnOn(this.guiTexture);
+        this.hud.quit = false;
     }
 
-    this.hud.updateMaterial();
+    if(!this.mainMenu.active && !this.hud.active && this.showHud)
+    {
+        this.hud.turnOn(this.guiTexture);
+    }
+
+    if(this.hud.active)
+    {
+        this.hud.updateMaterial();
+    }
 }
 
-GUI.prototype.pause = function()
+GUI.prototype.quit = function()
 {
-    this.pauseMenu.turnOn(this.guiTexture);
-
-    this.hud.turnOff(this.guiTexture);
+    return this.hud.quit;
 }
