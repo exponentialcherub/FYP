@@ -2,6 +2,7 @@ HUD = function(blockSelector, texture)
 {
     this.active = false;
     this.quit = false;
+    this.buttonPressed = false;
 
     var crosshair = new BABYLON.GUI.Image("crosshair", "assets/mccrosshair.png");
     crosshair.width = 0.04;
@@ -43,12 +44,14 @@ HUD = function(blockSelector, texture)
     var _this = this;
     this.saveBut.onPointerUpObservable.add(function() {
         // TODO: Save
+        _this.buttonPressed = true;
     });
     this.saveAndQuitBut.onPointerUpObservable.add(function() {
         // TODO: Save and quit
 
         _this.turnOff(texture);
         _this.quit = true;
+        _this.buttonPressed = true;
     });
 
     this.prevSelected = 0; 

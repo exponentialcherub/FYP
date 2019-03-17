@@ -52,3 +52,10 @@ GUI.prototype.quit = function()
 {
     return this.hud.quit;
 }
+
+GUI.prototype.buttonPressed = function()
+{
+    var ret = this.hud.buttonPressed;
+    this.hud.buttonPressed = false;
+    return ret;
+}

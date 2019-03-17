@@ -17,8 +17,7 @@ var initScene = function () {
     scene.collisionsEnabled = true;
     scene.clearColor = new BABYLON.Color3(135/255, 206/255, 235/255);
     
-    var camera = new BABYLON.UniversalCamera('camera1', new BABYLON.
-    Vector3(5, 5, -10), scene);
+    var camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, -10), scene);
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
@@ -31,7 +30,7 @@ var initScene = function () {
     // Request pointer lock
     canvas.addEventListener("click", function(e) {
         canvas.requestPointerLock = canvas.requestPointerLock || canvas.msRequestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-        if (canvas.requestPointerLock && world.inGame)
+        if (canvas.requestPointerLock && world.inGame && !gui.buttonPressed())
         {
             canvas.requestPointerLock();
         }
