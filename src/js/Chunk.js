@@ -256,6 +256,11 @@ Chunk.prototype.regenerateMesh = function()
     this.generateMesh();
 }
 
+Chunk.prototype.toJSON = function()
+{
+    return {size: this.size, blocks: this.blocks, min: this.min, max: this.max};
+}
+
 Chunk.prototype.dispose = function()
 {
     this.mesh.dispose();

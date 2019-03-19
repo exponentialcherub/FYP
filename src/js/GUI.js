@@ -1,12 +1,12 @@
 const pKeyCode = 112;
 
-GUI = function(createWorldFunc, world, scene)
+GUI = function(createWorldFunc, saveCallback, world, scene)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
 
     this.mainMenu = new MainMenu(this.guiTexture, createWorldFunc, world, scene);
     this.mainMenu.turnOn(this.guiTexture);
-    this.hud = new HUD(world.blockSelector, this.guiTexture);
+    this.hud = new HUD(world.blockSelector, this.guiTexture, saveCallback, world);
     // For when a player is in world and wants to switch the HUD off.
     this.showHud = true;
 

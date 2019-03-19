@@ -25,7 +25,7 @@ var initScene = function () {
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     
     var world = new World();
-    var gui = new GUI(createWorld, world, scene);
+    var gui = new GUI(createWorld, world.save, world, scene);
 
     // Request pointer lock
     canvas.addEventListener("click", function(e) {

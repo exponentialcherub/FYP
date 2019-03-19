@@ -82,6 +82,11 @@ ChunkManager.prototype.addBlock = function(blockPosition, normal)
     }
 }
 
+ChunkManager.prototype.toJSON = function()
+{
+    return {noChunks: this.noChunks, chunks: this.chunks};
+}
+
 ChunkManager.prototype.dispose = function()
 {
     for(var i = 0; i < this.chunks.length; i++)

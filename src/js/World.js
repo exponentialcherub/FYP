@@ -18,6 +18,27 @@ World.prototype.createWorld = function(scene)
     this.inGame = true;
 }
 
+World.prototype.save = function()
+{
+    var chunksJSON = JSON.stringify(this.chunkManager);
+    console.log(chunksJSON);
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) 
+        {
+            console.log("Woah it worked.");
+        }
+        if(this.status == 404)
+        {
+            console.error("Page not found.");
+        }
+    };
+
+    xhttp.open("POST", "saveWorld.php", true);
+    xhttp.send(chunksJSON);
+}
+
 World.prototype.dispose = function()
 {
     this.chunkManager.dispose();
