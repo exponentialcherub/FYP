@@ -29,14 +29,77 @@ MainMenu = function(texture, createWorldFunc, world, scene)
     loadWorld.background = "white";
     this.loadWorldBut = loadWorld;
 
+    var left = BABYLON.GUI.Button.CreateSimpleButton("left", 'Left');
+    left.width = '75px';
+    left.height = '75px';
+    left.color = "black";
+    left.fontSize = 20;
+    left.thickness = 0;
+    left.left = "-30%";
+    left.background = "white";
+    this.leftBut = left;
+
+    var right = BABYLON.GUI.Button.CreateSimpleButton("right", 'Right');
+    right.width = '75px';
+    right.height = '75px';
+    right.color = "black";
+    right.fontSize = 20;
+    right.thickness = 0;
+    right.left = "30%";
+    right.background = "white";
+    this.rightBut = right;
+
+    var select = BABYLON.GUI.Button.CreateSimpleButton("select", 'Select');
+    select.width = '250px';
+    select.height = '30px';
+    select.color = "black";
+    select.fontSize = 20;
+    select.thickness = 0;
+    select.top = "30%";
+    select.background = "white";
+    this.selectBut = select;
+
+    var selectedProject = new BABYLON.GUI.TextBlock();
+    selectedProject.text = "";
+    selectedProject.color = "black";
+    selectedProject.fontSize = 24;
+    this.selectedProject = selectedProject;
+    this.projectCounter = 0;
+
     var _this = this;
     this.createWorldBut.onPointerUpObservable.add(function() {
         _this.turnOff(texture);
         createWorldFunc(scene, world);
     });
     this.loadWorldBut.onPointerUpObservable.add(function() {
-        // TODO: Load list of worlds, speak to server.
+        _this.showProjects(texture);
     });
+
+    /*this.leftBut.onPointerUpObservable.add(function() {
+        if(_this.projectCounter == 0)
+        {
+            _this.projectCounter = _this.listOfProjects.length - 1;
+        }
+        else
+        {
+            _this.projectCounter--;
+        }
+
+        _this.updateListedProject();
+    });
+
+    this.rightBut.onPointerUpObservable.add(function() {
+        if(_this.projectCounter == _this.listOfProjects.length - 1)
+        {
+            _this.projectCounter = 0;
+        }
+        else
+        {
+            _this.projectCounter++;
+        }
+
+        _this.updateListedProject();
+    });*/
 }
 
 MainMenu.prototype.turnOn = function(texture)
@@ -55,4 +118,48 @@ MainMenu.prototype.turnOff = function(texture)
     texture.removeControl(this.loadWorldBut);
 
     this.active = false;
+}
+
+MainMenu.prototype.showProjects = function(texture)
+{
+    //var _this = this;
+    /*var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) 
+        {
+            console.log("Projects info received.");
+            _this.listOfProjects = JSON.parse(this.responseText);
+
+            if(_this.listOfProjects.length != 0)
+            {
+                _this.projectCounter = 0;
+                _this.selectedProject.text = _this.listOfProjects[_this.projectCounter];
+            }
+            else
+            {
+                _this.selectedProject.text = "No projects to load!";
+            }
+        }
+        if(this.status == 404)
+        {
+            alert("Projects could not be loaded, server not available");
+        }
+    };
+
+    xhttp.open("GET", "php/loadProjectList.php", true);
+    xhttp.send();*/
+
+    texture.removeControl(this.createWorldBut);
+    texture.removeControl(this.loadWorldBut);
+
+    texture.addControl(this.leftBut);
+    texture.addControl(this.rightBut);
+    texture.addControl(this.selectBut);
+    texture.addControl(this.selectedProject);
+}
+
+MainMenu.prototype.updateListedProject = function()
+{
+    //_this.selectedProject.text = _this.listOfProjects[_this.projectCounter];   
 }

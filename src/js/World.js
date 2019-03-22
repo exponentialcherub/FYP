@@ -13,30 +13,29 @@ World.prototype.createWorld = function(scene)
     material.backFaceCulling = true;
     material.freeze();
 
-    this.chunkManager = new ChunkManager(scene, material, this.blockSelector, 128, 16);
+    this.chunkManager = new ChunkManager(scene, material, this.blockSelector, 64, 16);
 
     this.inGame = true;
 }
 
 World.prototype.save = function()
 {
-    var chunksJSON = JSON.stringify(this.chunkManager);
-    console.log(chunksJSON);
+    var chunks = JSON.stringify(this.chunkManager);
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) 
         {
-            console.log("Woah it worked.");
+            console.log("Project sent to server.");
         }
         if(this.status == 404)
         {
-            console.error("Page not found.");
+            alert("Project could not be saved, request did not reach server.");
         }
     };
 
-    xhttp.open("POST", "saveWorld.php", true);
-    xhttp.send(chunksJSON);
+    xhttp.open("POST", "php/saveProject.php", true);
+    xhttp.send(chunks);
 }
 
 World.prototype.dispose = function()

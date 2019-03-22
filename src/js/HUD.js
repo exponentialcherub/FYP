@@ -50,6 +50,7 @@ HUD = function(blockSelector, texture, saveCallback, world)
     });
     this.saveAndQuitBut.onPointerUpObservable.add(function() {
         // TODO: Save and quit
+        saveCallback.call(world);
 
         _this.turnOff(texture);
         _this.quit = true;

@@ -6,6 +6,7 @@ GUI = function(createWorldFunc, saveCallback, world, scene)
 
     this.mainMenu = new MainMenu(this.guiTexture, createWorldFunc, world, scene);
     this.mainMenu.turnOn(this.guiTexture);
+
     this.hud = new HUD(world.blockSelector, this.guiTexture, saveCallback, world);
     // For when a player is in world and wants to switch the HUD off.
     this.showHud = true;
