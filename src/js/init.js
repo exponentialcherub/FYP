@@ -36,8 +36,10 @@ var initScene = function () {
         }
     }, false);
 
-    var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 10, -5), scene);
-    light.intensity = 100;
+    var light = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+    light.diffuse = new BABYLON.Color3(1, 1, 1);
+	light.specular = new BABYLON.Color3(1, 1, 1);
+	light.groundColor = new BABYLON.Color3(0, 0, 0);
 
     engine.runRenderLoop(function () {
         scene.render();
