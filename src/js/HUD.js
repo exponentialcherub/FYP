@@ -11,12 +11,16 @@ HUD = function(blockSelector, texture, saveCallback, world)
     this.crosshair = crosshair;
     
     this.blockSelector = blockSelector;
-    var textureImage = new BABYLON.GUI.Image("textureimage", "assets/brick.png");
+    var textureImage = new BABYLON.GUI.Image("textureimage", "assets/texturepack.png");
     textureImage.width = 0.1;
     textureImage.height = 0.1;
     textureImage.left = "-45%";
     textureImage.top = "40%";
     textureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+    textureImage.sourceTop = 0;
+    textureImage.sourceLeft = 0;
+    textureImage.sourceWidth = 100;
+    textureImage.sourceHeight = 100;
     this.textureImage = textureImage;
 
     var save = BABYLON.GUI.Button.CreateSimpleButton("save", "Save");
@@ -91,25 +95,11 @@ HUD.prototype.updateMaterial = function()
     }
     this.prevSelected = this.blockSelector.selected;
 
-    var src = "";
-    switch(this.blockSelector.selected)
+    var noMaterials = getNoMaterials();
+    if(this.blockSelector.selected > noMaterials)
     {
-        case 0:
-            src = "brick.png";
-            break;
-        case 1:
-            src = "dirt.png";
-            break;
-        case 2:
-            src = "stone.png";
-            break;
-        case 3:
-            src = "wood.png";
-            break;
-        default:
-            console.error("Invalid selected block number: " + this.blockSelector.selected);
-            return;
+        console.error("Invalid selected block number: " + this.blockSelector.selected);
     }
 
-    this.textureImage.source = "assets/" + src;
+    this.textureImage.sourceLeft = (this.blockSelector.selected * 100);
 }
