@@ -1,4 +1,4 @@
 getNoMaterials = function()
 {
-    return 8;
+    return 10;
 }

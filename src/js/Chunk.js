@@ -16,12 +16,10 @@ Chunk = function(id, blockId, chunkPosition, scene, material, size = 16)
 
             for(var k = 0; k < size; k++)
             {
-                // TODO: Perhaps chunk position should be the center, consistent with block. Although this makes
-                // more sense when indexing.
                 var position = chunkPosition.add(new BABYLON.Vector3(i, j, k));
                 
                 this.blocks[i][j][k] = new Block(position, "" + i + j + k, blockId);
-                if(j > size / 2)
+                if(chunkPosition.y > -size)
                 {
                     // Temporary to only populate half of chunk so we can build on. May end up doing this anyway.
                     this.blocks[i][j][k].setInactive();
@@ -211,7 +209,7 @@ Chunk.prototype.generateMesh = function()
                         Array.prototype.push.apply(normals, normalsSource[p]);
                         Array.prototype.push.apply(normals, normalsSource[p]);
 
-                        var x1 = textureIndex / noMaterials
+                        var x1 = textureIndex / noMaterials;
                         var x2 = (textureIndex + 1) / noMaterials;
                         
                         var uv = [x1, 0, x2, 0, x1, 1, 

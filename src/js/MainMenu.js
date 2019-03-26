@@ -75,7 +75,7 @@ MainMenu = function(texture, createWorldFunc, world, scene)
         _this.showProjects(texture);
     });
 
-    /*this.leftBut.onPointerUpObservable.add(function() {
+    this.leftBut.onPointerUpObservable.add(function() {
         if(_this.projectCounter == 0)
         {
             _this.projectCounter = _this.listOfProjects.length - 1;
@@ -99,7 +99,29 @@ MainMenu = function(texture, createWorldFunc, world, scene)
         }
 
         _this.updateListedProject();
-    });*/
+    });
+
+    this.selectBut.onPointerUpObservable.add(function() {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+                console.log("Save file received.");
+                var saveJson = JSON.parse(this.responseText);
+                console.log(this.responseText);
+            }
+            if(this.status == 404)
+            {
+                alert("Project could not be loaded, server not available");
+            }
+        };
+
+        xhttp.open("POST", "php/loadProject.php", true);
+
+        var jsonSend = {filename: _this.listOfProjects[_this.projectCounter]};
+        xhttp.send(JSON.stringify(jsonSend));
+    });
 }
 
 MainMenu.prototype.turnOn = function(texture)
@@ -122,8 +144,8 @@ MainMenu.prototype.turnOff = function(texture)
 
 MainMenu.prototype.showProjects = function(texture)
 {
-    //var _this = this;
-    /*var xhttp = new XMLHttpRequest();
+    var _this = this;
+    var xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) 
@@ -148,18 +170,18 @@ MainMenu.prototype.showProjects = function(texture)
     };
 
     xhttp.open("GET", "php/loadProjectList.php", true);
-    xhttp.send();*/
+    xhttp.send();
 
     texture.removeControl(this.createWorldBut);
     texture.removeControl(this.loadWorldBut);
 
+    texture.addControl(this.selectedProject);
     texture.addControl(this.leftBut);
     texture.addControl(this.rightBut);
     texture.addControl(this.selectBut);
-    texture.addControl(this.selectedProject);
 }
 
 MainMenu.prototype.updateListedProject = function()
 {
-    //_this.selectedProject.text = _this.listOfProjects[_this.projectCounter];   
+    this.selectedProject.text = this.listOfProjects[this.projectCounter];   
 }

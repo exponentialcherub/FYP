@@ -17,11 +17,17 @@ ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSi
 
     for(var i = 0; i < this.noChunks; i++)
     {
+        this.chunks[i] = new Array();
         for(var j = 0; j < this.noChunks; j++)
         {
-            var chunk = new Chunk(i, 1,
-                new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, -8, -worldSize / 2 + j * chunkSize), scene, material, chunkSize);
-            this.chunks[i * this.noChunks + j] = chunk;
+            this.chunks[i][j] = new Array();
+            for(var k = 0; k < this.noChunks; k++)
+            {
+                var chunk = new Chunk("" + i + j + k, 1,
+                    new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, chunkSize * (j - 1), 
+                                        -worldSize / 2 + k * chunkSize), scene, material, chunkSize);
+                this.chunks[i][j][k] = chunk;
+            }
         }
     }
 
@@ -36,27 +42,39 @@ ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSi
         if(e.button == 0)
         {
             // Left click, destroy.
-            for(var i = 0; i < _this.chunks.length; i++)
+            for(var i = 0; i < _this.noChunks; i++)
             {
-                var ret = _this.chunks[i].hasBlock(pickResult.pickedPoint, pickResult.getNormal(true, false)); 
-                if(ret.result)
+                for(var j = 0; j < _this.noChunks; j++)
                 {
-                    _this.chunks[i].removeBlock(ret.pos);
-                    break;
+                    for(var k = 0; k < _this.noChunks; k++)
+                    {
+                        var ret = _this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, pickResult.getNormal(true, false)); 
+                        if(ret.result)
+                        {
+                            _this.chunks[i][j][k].removeBlock(ret.pos);
+                            break;
+                        }
+                    }
                 }
             }
         }
         else if(e.button == 2)
         {
             // Right click, add block.
-            for(var i = 0; i < _this.chunks.length; i++)
+            for(var i = 0; i < _this.noChunks; i++)
             { 
-                var normal = pickResult.getNormal(true, false);
-                var ret = _this.chunks[i].hasBlock(pickResult.pickedPoint, normal); 
-                if(ret.result)
+                for(var j = 0; j < _this.noChunks; j++)
                 {
-                    _this.addBlock(ret.pos, normal);
-                    break;
+                    for(var k = 0; k < _this.noChunks; k++)
+                    {
+                        var normal = pickResult.getNormal(true, false);
+                        var ret = _this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
+                        if(ret.result)
+                        {
+                            _this.addBlock(ret.pos, normal);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -72,12 +90,18 @@ ChunkManager.prototype.addBlock = function(blockPosition, normal)
     newPosition.y += normal.y;
     newPosition.z += normal.z;
 
-    for(var i = 0; i < this.chunks.length; i++)
+    for(var i = 0; i < this.noChunks; i++)
     {
-        var ret = this.chunks[i].hasBlock(newPosition, normal);
-        if(ret.result)
+        for(var j = 0; j < this.noChunks; j++)
         {
-            this.chunks[i].addBlock(newPosition, this.selector.selected);
+            for(var k = 0; k < this.noChunks; k++)
+            {
+                var ret = this.chunks[i][j][k].hasBlock(newPosition, normal);
+                if(ret.result)
+                {
+                    this.chunks[i][j][k].addBlock(newPosition, this.selector.selected);
+                }
+            }
         }
     }
 }
@@ -89,8 +113,14 @@ ChunkManager.prototype.toJSON = function()
 
 ChunkManager.prototype.dispose = function()
 {
-    for(var i = 0; i < this.chunks.length; i++)
+    for(var i = 0; i < this.noChunks; i++)
     {
-        this.chunks[i].dispose();
+        for(var j = 0; j < this.noChunks; j++)
+        {
+            for(var k = 0; k < this.noChunks; k++)
+            {
+                this.chunks[i][j][k].dispose();
+            }
+        }
     }   
 }

@@ -21,6 +21,8 @@ var initScene = function () {
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
+    camera.angularSensibility = 7000;
+    camera.speed = 1;
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     
