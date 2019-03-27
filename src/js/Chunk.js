@@ -19,11 +19,10 @@ Chunk = function(id, blockId, chunkPosition, scene, material, size = 16)
                 var position = chunkPosition.add(new BABYLON.Vector3(i, j, k));
                 
                 this.blocks[i][j][k] = new Block(position, "" + i + j + k, blockId);
-                if(chunkPosition.y > -size)
+                if(position.y > -size)
                 {
                     // Temporary to only populate half of chunk so we can build on. May end up doing this anyway.
                     this.blocks[i][j][k].setInactive();
-                    continue;
                 }
             }
         }
