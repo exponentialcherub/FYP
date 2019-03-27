@@ -30,7 +30,7 @@ HUD = function(blockSelector, texture, saveCallback, world)
     controlsImage.sourceWidth = 202;
     controlsImage.sourceHeight = 245;
     controlsImage.left = "-43.5%";
-    controlsImage.top = "-35%";    
+    controlsImage.top = "-35%";
     controlsImage.alpha = 0.8;
     this.controlsImage = controlsImage;
 
