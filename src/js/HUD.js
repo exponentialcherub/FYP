@@ -21,6 +21,19 @@ HUD = function(blockSelector, texture, saveCallback, world)
     textureImage.sourceHeight = 100;
     this.textureImage = textureImage;
 
+    var controlsImage = new BABYLON.GUI.Image("controls", "assets/Controls.png");
+    controlsImage.width = "160px";
+    controlsImage.height = "185px";
+    controlsImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+    controlsImage.sourceTop = 0;
+    controlsImage.sourceLeft = 0;
+    controlsImage.sourceWidth = 202;
+    controlsImage.sourceHeight = 245;
+    controlsImage.left = "-43.5%";
+    controlsImage.top = "-35%";    
+    controlsImage.alpha = 0.8;
+    this.controlsImage = controlsImage;
+
     var textureContainer = new BABYLON.GUI.Rectangle();
     textureContainer.width = "100px";
     textureContainer.height = "100px";
@@ -100,6 +113,7 @@ HUD.prototype.turnOn = function(texture)
     texture.addControl(this.saveBut);
     texture.addControl(this.saveAndQuitBut);
     texture.addControl(this.settingsBut);
+    texture.addControl(this.controlsImage);
 
     this.active = true;
     this.quit = false;
@@ -112,6 +126,7 @@ HUD.prototype.turnOff = function(texture)
     texture.removeControl(this.saveBut);
     texture.removeControl(this.saveAndQuitBut);
     texture.removeControl(this.settingsBut);
+    texture.removeControl(this.controlsImage);
 
     this.active = false;
 }
