@@ -21,14 +21,14 @@ var initScene = function () {
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
-    configureCameraInput(camera);
+    var input = configureCameraInput(camera);
     camera.checkCollisions = true;
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     camera.angularSensibility = 7000;
     
     var world = new World();
-    var gui = new GUI(createWorld, world.save, world, scene);
+    var gui = new GUI(createWorld, world.save, updateCamera, camera, input, world, scene);
 
     // Request pointer lock
     canvas.addEventListener("click", function(e) {
@@ -65,7 +65,7 @@ var createWorld = function(scene, world)
 
 // Configures camera to move in line with y-axis, easier to place blocks when moving. 
 // Code modified from: https://doc.babylonjs.com/how_to/customizing_camera_inputs#with-javascript.
-var configureCameraInput = function(camera)
+var configureCameraInput = function(camera, input)
 {
     camera.inputs.removeByType("FreeCameraKeyboardMoveInput");
 
@@ -187,5 +187,13 @@ var configureCameraInput = function(camera)
     };
 
     // Connect to camera:
-    camera.inputs.add(new FreeCameraKeyboardCustomInput());
+    input = new FreeCameraKeyboardCustomInput();
+    camera.inputs.add(input);
+    return input;
+}
+
+var updateCamera = function(input, camera, mouseSensitivity, speed)
+{
+    camera.angularSensibility = mouseSensitivity;
+    input.sensibility = speed;
 }

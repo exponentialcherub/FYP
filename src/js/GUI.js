@@ -1,15 +1,17 @@
 const pKeyCode = 112;
 
-GUI = function(createWorldFunc, saveCallback, world, scene)
+GUI = function(createWorldFunc, saveCallback, settingsCallback, camera, input, world, scene)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
 
     this.mainMenu = new MainMenu(this.guiTexture, createWorldFunc, world, scene);
     this.mainMenu.turnOn(this.guiTexture);
 
-    this.hud = new HUD(world.blockSelector, this.guiTexture, saveCallback, world);
     // For when a player is in world and wants to switch the HUD off.
     this.showHud = true;
+
+    this.settings = new Settings(settingsCallback, input, camera, this, this.guiTexture);
+    this.hud = new HUD(world.blockSelector, this.guiTexture, saveCallback, world);
 
     var _this = this;
     window.addEventListener("keypress", function(e)
@@ -46,6 +48,15 @@ GUI.prototype.update = function()
     if(this.hud.active)
     {
         this.hud.updateMaterial();
+    }
+
+    if(this.hud.showSettings)
+    {
+        this.showHud = false;
+        this.hud.showSettings = false;
+        
+        this.hud.turnOff(this.guiTexture);
+        this.settings.turnOn(this.guiTexture);
     }
 }
 

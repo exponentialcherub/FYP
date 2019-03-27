@@ -55,6 +55,17 @@ HUD = function(blockSelector, texture, saveCallback, world)
     saveAndQuit.borderColour = "black";
     this.saveAndQuitBut = saveAndQuit;
 
+    var settings = BABYLON.GUI.Button.CreateSimpleButton("settings", "Settings");
+    settings.width = '100px';
+    settings.height = '50px';
+    settings.color = "black";
+    settings.fontSize = 20;
+    settings.top = "40%";
+    settings.left = "40%";
+    settings.background = "white";
+    settings.borderColour = "black";
+    this.settingsBut = settings;
+
     var _this = this;
     this.saveBut.onPointerUpObservable.add(function() {
         // TODO: Save
@@ -71,6 +82,12 @@ HUD = function(blockSelector, texture, saveCallback, world)
         _this.buttonPressed = true;
     });
 
+    this.settingsBut.onPointerUpObservable.add(function() {
+        _this.buttonPressed = true;
+
+        _this.showSettings = true;
+    })
+
     this.prevSelected = 0; 
 
     this.updateMaterial();
@@ -82,6 +99,7 @@ HUD.prototype.turnOn = function(texture)
     texture.addControl(this.textureContainer);
     texture.addControl(this.saveBut);
     texture.addControl(this.saveAndQuitBut);
+    texture.addControl(this.settingsBut);
 
     this.active = true;
     this.quit = false;
@@ -93,6 +111,7 @@ HUD.prototype.turnOff = function(texture)
     texture.removeControl(this.textureContainer);
     texture.removeControl(this.saveBut);
     texture.removeControl(this.saveAndQuitBut);
+    texture.removeControl(this.settingsBut);
 
     this.active = false;
 }
