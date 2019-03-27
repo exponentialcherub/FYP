@@ -23,7 +23,7 @@ ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSi
             this.chunks[i][j] = new Array();
             for(var k = 0; k < this.noChunks; k++)
             {
-                var chunk = new Chunk("" + i + j + k, 1,
+                var chunk = new Chunk("" + i + j + k, 4,
                     new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, chunkSize * (j - 1), 
                                         -worldSize / 2 + k * chunkSize), scene, material, chunkSize);
                 this.chunks[i][j][k] = chunk;

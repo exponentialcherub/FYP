@@ -12,16 +12,26 @@ HUD = function(blockSelector, texture, saveCallback, world)
     
     this.blockSelector = blockSelector;
     var textureImage = new BABYLON.GUI.Image("textureimage", "assets/texturepack.png");
-    textureImage.width = 0.1;
-    textureImage.height = 0.1;
-    textureImage.left = "-45%";
-    textureImage.top = "40%";
+    textureImage.width = 1;
+    textureImage.height = 1;
     textureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
     textureImage.sourceTop = 0;
     textureImage.sourceLeft = 0;
     textureImage.sourceWidth = 100;
     textureImage.sourceHeight = 100;
     this.textureImage = textureImage;
+
+    var textureContainer = new BABYLON.GUI.Rectangle();
+    textureContainer.width = "100px";
+    textureContainer.height = "100px";
+    textureContainer.left = "-45%";
+    textureContainer.top = "40%";
+    textureContainer.cornerRadius = 0;
+    textureContainer.color = "Black";
+    textureContainer.thickness = 8;
+    textureContainer.background = "green";
+    this.textureContainer = textureContainer;
+    this.textureContainer.addControl(this.textureImage);
 
     var save = BABYLON.GUI.Button.CreateSimpleButton("save", "Save");
     save.width = '100px';
@@ -69,7 +79,7 @@ HUD = function(blockSelector, texture, saveCallback, world)
 HUD.prototype.turnOn = function(texture)
 {
     texture.addControl(this.crosshair);
-    texture.addControl(this.textureImage);
+    texture.addControl(this.textureContainer);
     texture.addControl(this.saveBut);
     texture.addControl(this.saveAndQuitBut);
 
@@ -80,7 +90,7 @@ HUD.prototype.turnOn = function(texture)
 HUD.prototype.turnOff = function(texture)
 {
     texture.removeControl(this.crosshair);
-    texture.removeControl(this.textureImage);
+    texture.removeControl(this.textureContainer);
     texture.removeControl(this.saveBut);
     texture.removeControl(this.saveAndQuitBut);
 
