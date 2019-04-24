@@ -1,4 +1,4 @@
-MainMenu = function(texture, createWorldFunc, world, scene)
+MainMenu = function(texture, createWorldCallback, world, scene)
 {
     this.active = false;
 
@@ -9,7 +9,7 @@ MainMenu = function(texture, createWorldFunc, world, scene)
     title.top = "-40%";
     this.title = title;
 
-    var createWorld = BABYLON.GUI.Button.CreateSimpleButton("createWorld", 'Create World');
+    var createWorld = BABYLON.GUI.Button.CreateSimpleButton("createWorld", 'Create Project');
     createWorld.width = '250px';
     createWorld.height = '30px';
     createWorld.color = "black";
@@ -19,7 +19,7 @@ MainMenu = function(texture, createWorldFunc, world, scene)
     createWorld.background = "white";
     this.createWorldBut = createWorld;
 
-    var loadWorld = BABYLON.GUI.Button.CreateSimpleButton("loadWorld", 'Load World');
+    var loadWorld = BABYLON.GUI.Button.CreateSimpleButton("loadWorld", 'Load Project');
     loadWorld.width = '250px';
     loadWorld.height = '30px';
     loadWorld.color = "black";
@@ -69,7 +69,7 @@ MainMenu = function(texture, createWorldFunc, world, scene)
     var _this = this;
     this.createWorldBut.onPointerUpObservable.add(function() {
         _this.turnOff(texture);
-        createWorldFunc(scene, world);
+        createWorldCallback(scene, world);
     });
     this.loadWorldBut.onPointerUpObservable.add(function() {
         _this.showProjects(texture);

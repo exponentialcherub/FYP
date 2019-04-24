@@ -12,8 +12,7 @@ World.prototype.createWorld = function(scene)
     material.diffuseTexture = textureAtlas;
     material.backFaceCulling = true;
     material.freeze();
-
-    this.chunkManager = new ChunkManager(scene, material, this.blockSelector, 64, 16);
+    this.chunkManager = new ChunkManager(scene, material, this.blockSelector, 128, 32);
 
     this.inGame = true;
 }

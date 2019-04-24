@@ -1,4 +1,4 @@
-Chunk = function(id, blockId, chunkPosition, scene, material, size = 16) 
+Chunk = function(id, blockId, chunkPosition, scene, material, size) 
 {
     this.size = size;
     this.blocks = new Array();

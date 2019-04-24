@@ -1,5 +1,7 @@
 const qkeycode = 113;
+const qkeycode2 = 81;
 const ekeycode = 101;
+const ekeycode2 = 69;
 
 BlockSelector = function()
 {
@@ -9,7 +11,7 @@ BlockSelector = function()
     var _this = this;
     window.addEventListener("keypress", function(e)
     {
-        if(e.keyCode == ekeycode)
+        if(e.keyCode == ekeycode || e.keyCode == ekeycode2)
         {
             if(_this.selected == _this.noMaterials - 1)
             {
@@ -20,7 +22,7 @@ BlockSelector = function()
             _this.selected++;
         }
 
-        if(e.keyCode == qkeycode)
+        if(e.keyCode == qkeycode || e.keyCode == qkeycode2)
         {
             if(_this.selected == 0)
             {

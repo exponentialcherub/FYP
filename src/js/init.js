@@ -13,7 +13,7 @@ var initScene = function () {
     },false);
     
     var scene = new BABYLON.Scene(engine);
-    scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.OimoJSPlugin());
+    //scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.OimoJSPlugin());
     scene.collisionsEnabled = true;
     scene.clearColor = new BABYLON.Color3(135/255, 206/255, 235/255);
     
@@ -26,6 +26,7 @@ var initScene = function () {
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     camera.angularSensibility = 7000;
+    //camera.inertia = 0.1;
     
     var world = new World();
     var gui = new GUI(createWorld, world.save, updateCamera, camera, input, world, scene);

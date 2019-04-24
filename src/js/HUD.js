@@ -81,13 +81,11 @@ HUD = function(blockSelector, texture, saveCallback, world)
 
     var _this = this;
     this.saveBut.onPointerUpObservable.add(function() {
-        // TODO: Save
         _this.buttonPressed = true;
 
         saveCallback.call(world);
     });
     this.saveAndQuitBut.onPointerUpObservable.add(function() {
-        // TODO: Save and quit
         saveCallback.call(world);
 
         _this.turnOff(texture);

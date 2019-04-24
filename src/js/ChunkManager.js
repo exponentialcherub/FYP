@@ -1,4 +1,4 @@
-ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSize = 16)
+ChunkManager = function(scene, material, blockSelector, worldSize, chunkSize)
 {
     if(worldSize < chunkSize)
     {
@@ -39,6 +39,8 @@ ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSi
         {
             return;
         }
+
+        var normal = pickResult.getNormal(true, false);
         if(e.button == 0)
         {
             // Left click, destroy.
@@ -48,7 +50,7 @@ ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSi
                 {
                     for(var k = 0; k < _this.noChunks; k++)
                     {
-                        var ret = _this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, pickResult.getNormal(true, false)); 
+                        var ret = _this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
                         if(ret.result)
                         {
                             _this.chunks[i][j][k].removeBlock(ret.pos);
@@ -67,7 +69,6 @@ ChunkManager = function(scene, material, blockSelector, worldSize = 256, chunkSi
                 {
                     for(var k = 0; k < _this.noChunks; k++)
                     {
-                        var normal = pickResult.getNormal(true, false);
                         var ret = _this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
                         if(ret.result)
                         {
