@@ -1,6 +1,7 @@
 MainMenu = function(texture, createProjectCallback, world)
 {
     this.active = false;
+    this.buttonsActive = false;
 
     var title = new BABYLON.GUI.TextBlock();
     title.text = "Web Voxels";
@@ -29,42 +30,7 @@ MainMenu = function(texture, createProjectCallback, world)
     loadWorld.background = "white";
     this.loadWorldBut = loadWorld;
 
-    var left = BABYLON.GUI.Button.CreateSimpleButton("left", 'Left');
-    left.width = '75px';
-    left.height = '75px';
-    left.color = "black";
-    left.fontSize = 20;
-    left.thickness = 0;
-    left.left = "-30%";
-    left.background = "white";
-    this.leftBut = left;
-
-    var right = BABYLON.GUI.Button.CreateSimpleButton("right", 'Right');
-    right.width = '75px';
-    right.height = '75px';
-    right.color = "black";
-    right.fontSize = 20;
-    right.thickness = 0;
-    right.left = "30%";
-    right.background = "white";
-    this.rightBut = right;
-
-    var select = BABYLON.GUI.Button.CreateSimpleButton("select", 'Select');
-    select.width = '250px';
-    select.height = '30px';
-    select.color = "black";
-    select.fontSize = 20;
-    select.thickness = 0;
-    select.top = "30%";
-    select.background = "white";
-    this.selectBut = select;
-
-    var selectedProject = new BABYLON.GUI.TextBlock();
-    selectedProject.text = "";
-    selectedProject.color = "black";
-    selectedProject.fontSize = 24;
-    this.selectedProject = selectedProject;
-    this.projectCounter = 0;
+    this.loadProjectView = new LoadProjectView(texture, world);
 
     var _this = this;
     this.createWorldBut.onPointerUpObservable.add(function() {
@@ -72,51 +38,11 @@ MainMenu = function(texture, createProjectCallback, world)
         createProjectCallback(world);
     });
     this.loadWorldBut.onPointerUpObservable.add(function() {
-        _this.showProjects(texture);
-    });
-
-    this.leftBut.onPointerUpObservable.add(function() {
-        if(_this.listOfProjects.length == 0)
-        {
-            return;
-        }
-
-        if(_this.projectCounter == 0)
-        {
-            _this.projectCounter = _this.listOfProjects.length - 1;
-        }
-        else
-        {
-            _this.projectCounter--;
-        }
-
-        _this.updateListedProject();
-    });
-
-    this.rightBut.onPointerUpObservable.add(function() {
-        if(_this.listOfProjects.length == 0)
-        {
-            return;
-        }
-
-        if(_this.projectCounter == _this.listOfProjects.length - 1)
-        {
-            _this.projectCounter = 0;
-        }
-        else
-        {
-            _this.projectCounter++;
-        }
-
-        _this.updateListedProject();
-    });
-
-    this.selectBut.onPointerUpObservable.add(function() {
-        if(_this.listOfProjects.length != 0)
-        {
-            world.load(_this.listOfProjects[_this.projectCounter].projectId);
-            _this.removeLoadProjects(texture);
-        }
+        texture.removeControl(_this.createWorldBut);
+        texture.removeControl(_this.loadWorldBut);
+        texture.removeControl(_this.title);
+        _this.loadProjectView.turnOn(texture);
+        _this.buttonsActive = false;
     });
 }
 
@@ -127,6 +53,7 @@ MainMenu.prototype.turnOn = function(texture)
     texture.addControl(this.loadWorldBut);
 
     this.active = true;
+    this.buttonsActive = true;
 }
 
 MainMenu.prototype.turnOff = function(texture)
@@ -136,60 +63,17 @@ MainMenu.prototype.turnOff = function(texture)
     texture.removeControl(this.loadWorldBut);
 
     this.active = false;
+    this.buttonsActive = false
 }
 
-MainMenu.prototype.showProjects = function(texture)
+MainMenu.prototype.update = function(texture)
 {
-    var _this = this;
-    var xhttp = new XMLHttpRequest();
-
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) 
-        {
-            console.log("Projects info received.");
-            console.log(this.responseText);
-            _this.listOfProjects = JSON.parse(this.responseText);
-
-            if(_this.listOfProjects.length != 0)
-            {
-                _this.projectCounter = 0;
-                _this.selectedProject.text = _this.listOfProjects[_this.projectCounter].projectName;
-            }
-            else
-            {
-                _this.selectedProject.text = "No projects to load!";
-            }
-        }
-        if(this.status == 404)
-        {
-            alert("Projects could not be loaded, server not available");
-        }
-    };
-
-    xhttp.open("GET", "php/loadProjectList.php", true);
-    xhttp.send();
-
-    texture.removeControl(this.createWorldBut);
-    texture.removeControl(this.loadWorldBut);
-
-    texture.addControl(this.selectedProject);
-    texture.addControl(this.leftBut);
-    texture.addControl(this.rightBut);
-    texture.addControl(this.selectBut);
-}
-
-MainMenu.prototype.removeLoadProjects = function(texture)
-{
-    texture.removeControl(this.title);
-    texture.removeControl(this.selectedProject);
-    texture.removeControl(this.selectBut);
-    texture.removeControl(this.rightBut);
-    texture.removeControl(this.leftBut);
-
-    this.active = false;
-}
-
-MainMenu.prototype.updateListedProject = function()
-{
-    this.selectedProject.text = this.listOfProjects[this.projectCounter].projectName;   
+    if(this.loadProjectView.exit)
+    {
+        this.turnOn(texture);
+    }
+    if(this.active && !this.buttonsActive && !this.loadProjectView.active)
+    {
+        this.active = false;
+    }
 }

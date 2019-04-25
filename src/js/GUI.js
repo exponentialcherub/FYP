@@ -72,6 +72,8 @@ GUI.prototype.update = function(world)
         this.saveView.turnOn(this.guiTexture);
         world.inGame = false;
     }
+    
+    this.mainMenu.update(this.guiTexture);
 }
 
 GUI.prototype.quit = function()
