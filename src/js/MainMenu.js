@@ -76,6 +76,11 @@ MainMenu = function(texture, createProjectCallback, world)
     });
 
     this.leftBut.onPointerUpObservable.add(function() {
+        if(_this.listOfProjects.length == 0)
+        {
+            return;
+        }
+
         if(_this.projectCounter == 0)
         {
             _this.projectCounter = _this.listOfProjects.length - 1;
@@ -89,6 +94,11 @@ MainMenu = function(texture, createProjectCallback, world)
     });
 
     this.rightBut.onPointerUpObservable.add(function() {
+        if(_this.listOfProjects.length == 0)
+        {
+            return;
+        }
+
         if(_this.projectCounter == _this.listOfProjects.length - 1)
         {
             _this.projectCounter = 0;
@@ -102,10 +112,12 @@ MainMenu = function(texture, createProjectCallback, world)
     });
 
     this.selectBut.onPointerUpObservable.add(function() {
-        //loadCallback(_this.listOfProjects[_this.projectCounter]);
-        world.load(_this.listOfProjects[_this.projectCounter]);
+        if(_this.listOfProjects.length != 0)
+        {        
+            world.load(_this.listOfProjects[_this.projectCounter]);
 
-        _this.removeLoadProjects(texture);
+            _this.removeLoadProjects(texture);
+        }
     });
 }
 

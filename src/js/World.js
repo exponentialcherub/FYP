@@ -22,11 +22,23 @@ World.prototype.createWorld = function()
     this.chunkManager = new ChunkManager(this.blockSelector, this.scene, createWorldMaterial(this.scene), 128, 32);
 
     this.inGame = true;
+    
+    if(this.projectId != undefined)
+    {
+        delete this.projectId;
+    }
 }
 
 World.prototype.save = function()
 {
-    var chunks = JSON.stringify(this.chunkManager);
+    var chunksObj = this.chunkManager.toJSON();
+
+    if(this.projectId != undefined)
+    {
+        chunksObj.projectId = this.projectId;
+    }
+
+    var chunks = JSON.stringify(chunksObj);
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -34,9 +46,9 @@ World.prototype.save = function()
         {
             console.log("Project sent to server.");
         }
-        if(this.status == 404)
+        else if(this.status == 404)
         {
-            alert("Project could not be saved, request did not reach server.");
+            alert("Project could not be saved, problem sending to server.");
         }
     };
 
@@ -44,13 +56,13 @@ World.prototype.save = function()
     xhttp.send(chunks);
 }
 
-World.prototype.load = function(projectName)
+World.prototype.load = function(projectId)
 {
     var xhttp = new XMLHttpRequest();
 
     xhttp.open("POST", "php/loadProject.php", false);
 
-    var jsonSend = {filename: projectName};
+    var jsonSend = {filename: projectId};
     xhttp.send(JSON.stringify(jsonSend));
 
     if (xhttp.readyState == 4 && xhttp.status == 200) 
@@ -66,6 +78,8 @@ World.prototype.load = function(projectName)
     {
         alert("Project could not be loaded, server not available");
     }
+
+    this.projectId = projectId;
 }
 
 World.prototype.dispose = function()
