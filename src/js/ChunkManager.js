@@ -1,39 +1,10 @@
-ChunkManager = function(scene, material, blockSelector, worldSize, chunkSize)
+ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
 {
-    if(worldSize < chunkSize)
-    {
-        console.log("World size is less than chunk size, setting world size equal (" + chunkSize + ")");
-        worldSize = chunkSize;
-    }
-
     this.selector = blockSelector;
-
-    this.chunks = new Array();
-    // Number of chunks in one dimension (i.e. this doesn't make any sense).
-    // Either:
-    //     Need new name or, 
-    //     Create chunks differently
-    this.noChunks = worldSize / chunkSize;
-
-    for(var i = 0; i < this.noChunks; i++)
-    {
-        this.chunks[i] = new Array();
-        for(var j = 0; j < this.noChunks; j++)
-        {
-            this.chunks[i][j] = new Array();
-            for(var k = 0; k < this.noChunks; k++)
-            {
-                var chunk = new Chunk("" + i + j + k, 4,
-                    new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, chunkSize * (j - 1), 
-                                        -worldSize / 2 + k * chunkSize), scene, material, chunkSize);
-                this.chunks[i][j][k] = chunk;
-            }
-        }
-    }
+    this.scene = scene;
 
     var _this = this;
-    window.addEventListener('mousedown', function(e)
-    {
+    window.addEventListener('mousedown', function(e){
         var pickResult = scene.pick(window.innerWidth/2, window.innerHeight/2); 
         if(!pickResult.hit)
         {
@@ -80,6 +51,112 @@ ChunkManager = function(scene, material, blockSelector, worldSize, chunkSize)
             }
         }
     });
+
+    if(material == undefined)
+    {
+        return;
+    }
+
+    if(worldSize < chunkSize)
+    {
+        console.log("World size is less than chunk size, setting world size equal (" + chunkSize + ")");
+        worldSize = chunkSize;
+    }
+
+    this.selector = blockSelector;
+
+    this.chunks = new Array();
+    // Number of chunks in one dimension (i.e. this doesn't make any sense).
+    // Either:
+    //     Need new name or, 
+    //     Create chunks differently
+    this.noChunks = worldSize / chunkSize;
+
+    for(var i = 0; i < this.noChunks; i++)
+    {
+        this.chunks[i] = new Array();
+        for(var j = 0; j < this.noChunks; j++)
+        {
+            this.chunks[i][j] = new Array();
+            for(var k = 0; k < this.noChunks; k++)
+            {
+                var chunk = new Chunk("" + i + j + k, 4,
+                    new BABYLON.Vector3(-worldSize / 2 + i * chunkSize, chunkSize * (j - 1), 
+                                        -worldSize / 2 + k * chunkSize), this.scene, material, chunkSize);
+                this.chunks[i][j][k] = chunk;
+            }
+        }
+    }
+}
+
+ChunkManager.prototype.loadChunksFromJSON = function(material, jsonObj)
+{
+    this.chunks = new Array();
+    this.noChunks = jsonObj.noChunks;
+
+    for(var i = 0; i < this.noChunks; i++)
+    {
+        this.chunks[i] = new Array();
+        for(var j = 0; j < this.noChunks; j++)
+        {
+            this.chunks[i][j] = new Array();
+            for(var k = 0; k < this.noChunks; k++)
+            {
+                this.chunks[i][j][k] = new Chunk("" + i + j + k);
+                this.chunks[i][j][k].loadChunkFromJSON(this.scene, material, jsonObj.chunks[i][j][k]);
+            }
+        }
+    }
+
+}
+
+ChunkManager.prototype.clickHandler = function(e)
+{
+    var pickResult = this.scene.pick(window.innerWidth/2, window.innerHeight/2); 
+    if(!pickResult.hit)
+    {
+        return;
+    }
+
+    var normal = pickResult.getNormal(true, false);
+    if(e.button == 0)
+    {
+        // Left click, destroy.
+        for(var i = 0; i < this.noChunks; i++)
+        {
+            for(var j = 0; j < this.noChunks; j++)
+            {
+                for(var k = 0; k < this.noChunks; k++)
+                {
+                    var ret = this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
+                    if(ret.result)
+                    {
+                        this.chunks[i][j][k].removeBlock(ret.pos);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    else if(e.button == 2)
+    {
+        // Right click, add block.
+        for(var i = 0; i < this.noChunks; i++)
+        { 
+            for(var j = 0; j < this.noChunks; j++)
+            {
+                for(var k = 0; k < this.noChunks; k++)
+                {
+                    var ret = this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
+                    if(ret.result)
+                    {
+                        this.addBlock(ret.pos, normal);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 ChunkManager.prototype.addBlock = function(blockPosition, normal)

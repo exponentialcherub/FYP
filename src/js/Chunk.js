@@ -1,5 +1,11 @@
 Chunk = function(id, blockId, chunkPosition, scene, material, size) 
 {
+    this.id = id;
+    if(scene == undefined)
+    {
+        return;
+    }
+
     this.size = size;
     this.blocks = new Array();
     this.mesh = new BABYLON.Mesh("chunk" + id, scene);
@@ -18,7 +24,7 @@ Chunk = function(id, blockId, chunkPosition, scene, material, size)
             {
                 var position = chunkPosition.add(new BABYLON.Vector3(i, j, k));
                 
-                this.blocks[i][j][k] = new Block(position, "" + i + j + k, blockId);
+                this.blocks[i][j][k] = new Block(position, "" + i + j + k, blockId, true);
                 if(position.y > -size)
                 {
                     // Temporary to only populate half of chunk so we can build on. May end up doing this anyway.
@@ -253,9 +259,66 @@ Chunk.prototype.regenerateMesh = function()
     this.generateMesh();
 }
 
+Chunk.prototype.loadChunkFromJSON = function(scene, material, jsonObj)
+{
+    this.size = jsonObj.size;
+    this.blocks = new Array();
+    this.mesh = new BABYLON.Mesh("chunk" + this.id, scene);
+    this.material = material;
+    this.min = new BABYLON.Vector3(jsonObj.min.x, jsonObj.min.y, jsonObj.min.z);
+    this.max = new BABYLON.Vector3(jsonObj.max.x, jsonObj.max.y, jsonObj.max.z);
+
+    // Create all blocks inactive initally.
+    for(var i = 0; i < this.size; i++)
+    {
+        this.blocks[i] = new Array();
+        for(var j = 0; j < this.size; j++)
+        {
+            this.blocks[i][j] = new Array();
+
+            for(var k = 0; k < this.size; k++)
+            {
+                var position = this.min.add(new BABYLON.Vector3(i, j, k));
+                
+                this.blocks[i][j][k] = new Block(position, "" + i + j + k, 1, false);
+            }
+        }
+    }
+
+    // Now turn on active blocks from json object.
+    for(var m = 0; m < jsonObj.blocks.length; m++)
+    {
+        var i = Math.round(jsonObj.blocks[m].position.x) - this.min.x;
+        var j = Math.round(jsonObj.blocks[m].position.y) - this.min.y;
+        var k = Math.round(jsonObj.blocks[m].position.z) - this.min.z;
+
+        this.blocks[i][j][k].active = true;
+        this.blocks[i][j][k].type = jsonObj.blocks[m].type;
+    }
+
+    this.generateMesh(this.min, scene);
+}
+
 Chunk.prototype.toJSON = function()
 {
-    return {size: this.size, blocks: this.blocks, min: this.min, max: this.max};
+    var tempBlocks = new Array();
+    var tmpI = 0;
+
+    // Only save active blocks.
+    for(var i = 0; i < this.size; i++)
+    {
+        for(var j = 0; j < this.size; j++)
+        {
+            for(var k = 0; k < this.size; k++)
+            {
+                if(this.blocks[i][j][k].active)
+                {
+                    tempBlocks[tmpI++] = this.blocks[i][j][k];
+                }
+            }
+        }
+    }
+    return {size: this.size, min: this.min, max: this.max, blocks: tempBlocks};
 }
 
 Chunk.prototype.dispose = function()

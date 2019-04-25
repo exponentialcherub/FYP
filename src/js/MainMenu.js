@@ -1,4 +1,4 @@
-MainMenu = function(texture, createWorldCallback, world, scene)
+MainMenu = function(texture, createProjectCallback, world)
 {
     this.active = false;
 
@@ -69,7 +69,7 @@ MainMenu = function(texture, createWorldCallback, world, scene)
     var _this = this;
     this.createWorldBut.onPointerUpObservable.add(function() {
         _this.turnOff(texture);
-        createWorldCallback(scene, world);
+        createProjectCallback(world);
     });
     this.loadWorldBut.onPointerUpObservable.add(function() {
         _this.showProjects(texture);
@@ -102,25 +102,10 @@ MainMenu = function(texture, createWorldCallback, world, scene)
     });
 
     this.selectBut.onPointerUpObservable.add(function() {
-        var xhttp = new XMLHttpRequest();
+        //loadCallback(_this.listOfProjects[_this.projectCounter]);
+        world.load(_this.listOfProjects[_this.projectCounter]);
 
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) 
-            {
-                console.log("Save file received.");
-                var saveJson = JSON.parse(this.responseText);
-                console.log(this.responseText);
-            }
-            if(this.status == 404)
-            {
-                alert("Project could not be loaded, server not available");
-            }
-        };
-
-        xhttp.open("POST", "php/loadProject.php", true);
-
-        var jsonSend = {filename: _this.listOfProjects[_this.projectCounter]};
-        xhttp.send(JSON.stringify(jsonSend));
+        _this.removeLoadProjects(texture);
     });
 }
 
@@ -179,6 +164,17 @@ MainMenu.prototype.showProjects = function(texture)
     texture.addControl(this.leftBut);
     texture.addControl(this.rightBut);
     texture.addControl(this.selectBut);
+}
+
+MainMenu.prototype.removeLoadProjects = function(texture)
+{
+    texture.removeControl(this.title);
+    texture.removeControl(this.selectedProject);
+    texture.removeControl(this.selectBut);
+    texture.removeControl(this.rightBut);
+    texture.removeControl(this.leftBut);
+
+    this.active = false;
 }
 
 MainMenu.prototype.updateListedProject = function()

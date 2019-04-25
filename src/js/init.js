@@ -28,8 +28,8 @@ var initScene = function () {
     camera.angularSensibility = 7000;
     //camera.inertia = 0.1;
     
-    var world = new World();
-    var gui = new GUI(createWorld, world.save, updateCamera, camera, input, world, scene);
+    var world = new World(scene);
+    var gui = new GUI(createWorld, world.save, updateCamera, camera, input, world);
 
     // Request pointer lock
     canvas.addEventListener("click", function(e) {
@@ -59,9 +59,9 @@ var initScene = function () {
     });
 }
 
-var createWorld = function(scene, world)
+var createWorld = function(world)
 {
-    world.createWorld(scene);
+    world.createWorld();
 }
 
 // Configures camera to move in line with y-axis, easier to place blocks when moving. 

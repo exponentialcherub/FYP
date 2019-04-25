@@ -7,8 +7,8 @@ $dir = "C:\\Users\\liams\\OneDrive\\Documents\\FYP\\projects\\" . $data->filenam
 if (file_exists($dir))
 {
     $saveFile = fopen($dir, "r");
-
-    echo(($saveFile));
+    $contents = fread($saveFile, filesize($dir));
+    echo($contents);
 }
 
 ?>

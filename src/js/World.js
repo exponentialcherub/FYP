@@ -1,10 +1,11 @@
-World = function()
+World = function(scene)
 {
     this.inGame = false;
+    this.scene = scene;
     this.blockSelector = new BlockSelector();
 }
 
-World.prototype.createWorld = function(scene)
+createWorldMaterial = function(scene)
 {
     var material = new BABYLON.StandardMaterial("textureatlas", scene);
     var textureAtlas = new BABYLON.Texture("assets/texturepack.png", scene);
@@ -12,7 +13,13 @@ World.prototype.createWorld = function(scene)
     material.diffuseTexture = textureAtlas;
     material.backFaceCulling = true;
     material.freeze();
-    this.chunkManager = new ChunkManager(scene, material, this.blockSelector, 128, 32);
+
+    return material;
+}
+
+World.prototype.createWorld = function()
+{
+    this.chunkManager = new ChunkManager(this.blockSelector, this.scene, createWorldMaterial(this.scene), 128, 32);
 
     this.inGame = true;
 }
@@ -35,6 +42,30 @@ World.prototype.save = function()
 
     xhttp.open("POST", "php/saveProject.php", true);
     xhttp.send(chunks);
+}
+
+World.prototype.load = function(projectName)
+{
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", "php/loadProject.php", false);
+
+    var jsonSend = {filename: projectName};
+    xhttp.send(JSON.stringify(jsonSend));
+
+    if (xhttp.readyState == 4 && xhttp.status == 200) 
+    {
+        console.log("Save file received. Loading Project.");
+        var saveJson = JSON.parse(xhttp.responseText);
+        this.chunkManager = new ChunkManager(this.blockSelector, this.scene);
+        this.chunkManager.loadChunksFromJSON(createWorldMaterial(), saveJson);
+        this.inGame = true;
+        console.log("Project loaded succesfully.");
+    }
+    else
+    {
+        alert("Project could not be loaded, server not available");
+    }
 }
 
 World.prototype.dispose = function()

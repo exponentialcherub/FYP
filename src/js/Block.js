@@ -1,7 +1,7 @@
-Block = function(position, id, blockType) 
+Block = function(position, id, blockType, active) 
 {
-    this.position = position;
-    this.active = true;
+    this.position = new BABYLON.Vector3(position.x, position.y, position.z);
+    this.active = active;
     this.id = id;
     this.type = blockType;
 }
