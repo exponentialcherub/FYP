@@ -1,6 +1,6 @@
 const pKeyCode = 112;
 
-GUI = function(createProjectCallback, saveCallback, settingsCallback, camera, input, world)
+GUI = function(createProjectCallback, settingsCallback, camera, input, world)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
 
@@ -11,7 +11,8 @@ GUI = function(createProjectCallback, saveCallback, settingsCallback, camera, in
     this.showHud = true;
 
     this.settings = new Settings(settingsCallback, input, camera, this, this.guiTexture);
-    this.hud = new HUD(world.blockSelector, this.guiTexture, saveCallback, world);
+    this.saveView = new SaveView(input, this.guiTexture, this, world);
+    this.hud = new HUD(world.blockSelector, this.guiTexture, this.saveView.turnOn, world);
 
     var _this = this;
     window.addEventListener("keypress", function(e)
@@ -32,7 +33,7 @@ GUI = function(createProjectCallback, saveCallback, settingsCallback, camera, in
     });
 }
 
-GUI.prototype.update = function()
+GUI.prototype.update = function(world)
 {
     if(this.hud.quit)
     {
@@ -43,6 +44,7 @@ GUI.prototype.update = function()
     if(!this.mainMenu.active && !this.hud.active && this.showHud)
     {
         this.hud.turnOn(this.guiTexture);
+        world.inGame = true;
     }
 
     if(this.hud.active)
@@ -57,6 +59,17 @@ GUI.prototype.update = function()
         
         this.hud.turnOff(this.guiTexture);
         this.settings.turnOn(this.guiTexture);
+        world.inGame = false;
+    }
+
+    if(this.hud.showSaveView)
+    {
+        this.showHud = false;
+        this.hud.showSaveView = false;
+        
+        this.hud.turnOff(this.guiTexture);
+        this.saveView.turnOn(this.guiTexture);
+        world.inGame = false;
     }
 }
 

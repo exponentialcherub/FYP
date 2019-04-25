@@ -26,6 +26,9 @@ World.prototype.createWorld = function()
     if(this.projectId != undefined)
     {
         delete this.projectId;
+        delete this.author;
+        delete this.projectName;
+        delete this.description;
     }
 }
 
@@ -37,6 +40,10 @@ World.prototype.save = function()
     {
         chunksObj.projectId = this.projectId;
     }
+
+    chunksObj.author = this.author;
+    chunksObj.projectName = this.projectName;
+    chunksObj.description = this.description;
 
     var chunks = JSON.stringify(chunksObj);
 
@@ -80,6 +87,13 @@ World.prototype.load = function(projectId)
     }
 
     this.projectId = projectId;
+}
+
+World.prototype.updateProjectValues = function(author, projectName, description)
+{
+    this.author = author;
+    this.projectName = projectName;
+    this.description = description;
 }
 
 World.prototype.dispose = function()

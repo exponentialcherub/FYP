@@ -1,6 +1,7 @@
 Settings = function(updateSettings, input, camera, gui, texture)
 {
     this.active = false;
+    this.input = input;
 
     var _this = this;
 
@@ -65,7 +66,6 @@ Settings = function(updateSettings, input, camera, gui, texture)
     done.top = "30%";
     done.background = "white";
     done.onPointerUpObservable.add(function() {
-        console.log(_this.speed);
         updateSettings(input, camera, _this.mouseSensitivity, _this.speed);
         
         _this.turnOff(texture);
@@ -78,6 +78,7 @@ Settings.prototype.turnOn = function(texture)
 {
     texture.addControl(this.panel);
     texture.addControl(this.doneBut);
+    this.input.detachControl(window);
 
     this.active = true;
 }
@@ -86,6 +87,7 @@ Settings.prototype.turnOff = function(texture)
 {
     texture.removeControl(this.panel);
     texture.removeControl(this.doneBut);
+    this.input.attachControl(window);
 
     this.active = false;
 }

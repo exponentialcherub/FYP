@@ -29,7 +29,7 @@ var initScene = function () {
     //camera.inertia = 0.1;
     
     var world = new World(scene);
-    var gui = new GUI(createWorld, world.save, updateCamera, camera, input, world);
+    var gui = new GUI(createWorld, updateCamera, camera, input, world);
 
     // Request pointer lock
     canvas.addEventListener("click", function(e) {
@@ -55,7 +55,7 @@ var initScene = function () {
             world.dispose();
         }
 
-        gui.update();
+        gui.update(world, camera);
     });
 }
 
