@@ -113,9 +113,8 @@ MainMenu = function(texture, createProjectCallback, world)
 
     this.selectBut.onPointerUpObservable.add(function() {
         if(_this.listOfProjects.length != 0)
-        {        
-            world.load(_this.listOfProjects[_this.projectCounter]);
-
+        {
+            world.load(_this.listOfProjects[_this.projectCounter].projectId);
             _this.removeLoadProjects(texture);
         }
     });
@@ -148,12 +147,13 @@ MainMenu.prototype.showProjects = function(texture)
         if (this.readyState == 4 && this.status == 200) 
         {
             console.log("Projects info received.");
+            console.log(this.responseText);
             _this.listOfProjects = JSON.parse(this.responseText);
 
             if(_this.listOfProjects.length != 0)
             {
                 _this.projectCounter = 0;
-                _this.selectedProject.text = _this.listOfProjects[_this.projectCounter];
+                _this.selectedProject.text = _this.listOfProjects[_this.projectCounter].projectName;
             }
             else
             {
@@ -191,5 +191,5 @@ MainMenu.prototype.removeLoadProjects = function(texture)
 
 MainMenu.prototype.updateListedProject = function()
 {
-    this.selectedProject.text = this.listOfProjects[this.projectCounter];   
+    this.selectedProject.text = this.listOfProjects[this.projectCounter].projectName;   
 }

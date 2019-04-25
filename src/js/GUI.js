@@ -64,6 +64,7 @@ GUI.prototype.update = function(world)
 
     if(this.hud.showSaveView)
     {
+        this.saveView.updateTextValues(world);
         this.showHud = false;
         this.hud.showSaveView = false;
         

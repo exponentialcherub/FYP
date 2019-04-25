@@ -78,6 +78,7 @@ World.prototype.load = function(projectId)
         var saveJson = JSON.parse(xhttp.responseText);
         this.chunkManager = new ChunkManager(this.blockSelector, this.scene);
         this.chunkManager.loadChunksFromJSON(createWorldMaterial(), saveJson);
+        this.updateProjectValues(saveJson.author, saveJson.projectName, saveJson.description);
         this.inGame = true;
         console.log("Project loaded succesfully.");
     }

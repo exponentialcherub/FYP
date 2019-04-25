@@ -10,7 +10,17 @@ if (is_dir($dir))
         while (($file = readdir($dh)) !== false){
             if(!is_dir($file))
             {
-                $projects[$i] = $file;
+                $saveFile = fopen($dir . "\\" . $file, "r");
+                $contents = fread($saveFile, filesize($dir . "\\" . $file));
+                $jsonObj = json_decode($contents);
+
+                $projects[$i] = new stdClass();
+                $projects[$i]->projectId = $file;
+                $projects[$i]->projectName = $jsonObj->projectName;
+                $projects[$i]->author = $jsonObj->author;
+                $projects[$i]->description = $jsonObj->description;
+
+                fclose($saveFile);
                 $i++;
             }
         }

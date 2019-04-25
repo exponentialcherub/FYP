@@ -57,16 +57,16 @@ HUD = function(blockSelector, texture, saveCallback, world)
     save.borderColour = "black";
     this.saveBut = save;
 
-    var saveAndQuit = BABYLON.GUI.Button.CreateSimpleButton("savequit", "Save & Quit");
-    saveAndQuit.width = '100px';
-    saveAndQuit.height = '50px';
-    saveAndQuit.color = "black";
-    saveAndQuit.fontSize = 20;
-    saveAndQuit.top = "-40%";
-    saveAndQuit.left = "40%";
-    saveAndQuit.background = "white";
-    saveAndQuit.borderColour = "black";
-    this.saveAndQuitBut = saveAndQuit;
+    var quit = BABYLON.GUI.Button.CreateSimpleButton("savequit", "Quit");
+    quit.width = '100px';
+    quit.height = '50px';
+    quit.color = "black";
+    quit.fontSize = 20;
+    quit.top = "-40%";
+    quit.left = "40%";
+    quit.background = "white";
+    quit.borderColour = "black";
+    this.quitBut = quit;
 
     var settings = BABYLON.GUI.Button.CreateSimpleButton("settings", "Settings");
     settings.width = '100px';
@@ -87,9 +87,7 @@ HUD = function(blockSelector, texture, saveCallback, world)
         //saveCallback(texture);
         _this.showSaveView = true;
     });
-    this.saveAndQuitBut.onPointerUpObservable.add(function() {
-        saveCallback.call(world);
-
+    this.quitBut.onPointerUpObservable.add(function() {
         _this.turnOff(texture);
         _this.quit = true;
         _this.buttonPressed = true;
@@ -111,7 +109,7 @@ HUD.prototype.turnOn = function(texture)
     texture.addControl(this.crosshair);
     texture.addControl(this.textureContainer);
     texture.addControl(this.saveBut);
-    texture.addControl(this.saveAndQuitBut);
+    texture.addControl(this.quitBut);
     texture.addControl(this.settingsBut);
     texture.addControl(this.controlsImage);
 
@@ -124,7 +122,7 @@ HUD.prototype.turnOff = function(texture)
     texture.removeControl(this.crosshair);
     texture.removeControl(this.textureContainer);
     texture.removeControl(this.saveBut);
-    texture.removeControl(this.saveAndQuitBut);
+    texture.removeControl(this.quitBut);
     texture.removeControl(this.settingsBut);
     texture.removeControl(this.controlsImage);
 
