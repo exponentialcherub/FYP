@@ -11,15 +11,71 @@ HUDView = function(blockSelector, texture, stateChangeCallback, states)
     this.crosshair = crosshair;
     
     this.blockSelector = blockSelector;
-    var textureImage = new BABYLON.GUI.Image("textureimage", "assets/texturepack.png");
-    textureImage.width = 1;
-    textureImage.height = 1;
-    textureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
-    textureImage.sourceTop = 0;
-    textureImage.sourceLeft = 0;
-    textureImage.sourceWidth = 100;
-    textureImage.sourceHeight = 100;
-    this.textureImage = textureImage;
+    var mainTextureImage = new BABYLON.GUI.Image("mainTextureImage", "assets/texturepack.png");
+    mainTextureImage.width = 1;
+    mainTextureImage.height = 1;
+    mainTextureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+    mainTextureImage.sourceTop = 0;
+    mainTextureImage.sourceLeft = 0;
+    mainTextureImage.sourceWidth = 100;
+    mainTextureImage.sourceHeight = 100;
+    this.mainTextureImage = mainTextureImage;
+
+    var textureContainer = new BABYLON.GUI.Rectangle();
+    textureContainer.width = "100px";
+    textureContainer.height = "100px";
+    textureContainer.left = "-40%";
+    textureContainer.top = "40%";
+    textureContainer.cornerRadius = 0;
+    textureContainer.color = "Black";
+    textureContainer.thickness = 8;
+    textureContainer.background = "green";
+    this.textureContainer = textureContainer;
+    this.textureContainer.addControl(this.mainTextureImage);
+
+    var leftTextureImage = new BABYLON.GUI.Image("mainTextureImage", "assets/texturepack.png");
+    leftTextureImage.width = 1;
+    leftTextureImage.height = 1;
+    leftTextureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+    leftTextureImage.sourceTop = 0;
+    leftTextureImage.sourceLeft = (getNoMaterials() - 1) * 100;
+    leftTextureImage.sourceWidth = 100;
+    leftTextureImage.sourceHeight = 100;
+    this.leftTextureImage = leftTextureImage;
+
+    var leftTextureContainer = new BABYLON.GUI.Rectangle();
+    leftTextureContainer.width = "75px";
+    leftTextureContainer.height = "75px";
+    leftTextureContainer.left = "-46.5%";
+    leftTextureContainer.top = "40%";
+    leftTextureContainer.cornerRadius = 0;
+    leftTextureContainer.color = "Black";
+    leftTextureContainer.thickness = 8;
+    leftTextureContainer.alpha = 0.5;
+    this.leftTextureContainer = leftTextureContainer;
+    this.leftTextureContainer.addControl(this.leftTextureImage);
+
+    var rightTextureImage = new BABYLON.GUI.Image("mainTextureImage", "assets/texturepack.png");
+    rightTextureImage.width = 1;
+    rightTextureImage.height = 1;
+    rightTextureImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+    rightTextureImage.sourceTop = 0;
+    rightTextureImage.sourceLeft = 100;
+    rightTextureImage.sourceWidth = 100;
+    rightTextureImage.sourceHeight = 100;
+    this.rightTextureImage = rightTextureImage;
+
+    var rightTextureContainer = new BABYLON.GUI.Rectangle();
+    rightTextureContainer.width = "75px";
+    rightTextureContainer.height = "75px";
+    rightTextureContainer.left = "-33.5%";
+    rightTextureContainer.top = "40%";
+    rightTextureContainer.cornerRadius = 0;
+    rightTextureContainer.color = "Black";
+    rightTextureContainer.thickness = 8;
+    rightTextureContainer.alpha = 0.5;
+    this.rightTextureContainer = rightTextureContainer;
+    this.rightTextureContainer.addControl(this.rightTextureImage);
 
     var controlsImage = new BABYLON.GUI.Image("controls", "assets/Controls.png");
     controlsImage.width = "160px";
@@ -33,18 +89,6 @@ HUDView = function(blockSelector, texture, stateChangeCallback, states)
     controlsImage.top = "-35%";
     controlsImage.alpha = 0.8;
     this.controlsImage = controlsImage;
-
-    var textureContainer = new BABYLON.GUI.Rectangle();
-    textureContainer.width = "100px";
-    textureContainer.height = "100px";
-    textureContainer.left = "-45%";
-    textureContainer.top = "40%";
-    textureContainer.cornerRadius = 0;
-    textureContainer.color = "Black";
-    textureContainer.thickness = 8;
-    textureContainer.background = "green";
-    this.textureContainer = textureContainer;
-    this.textureContainer.addControl(this.textureImage);
 
     var save = BABYLON.GUI.Button.CreateSimpleButton("save", "Save");
     save.width = '100px';
@@ -110,6 +154,8 @@ HUDView.prototype.turnOn = function()
     this.texture.addControl(this.quitBut);
     this.texture.addControl(this.settingsBut);
     this.texture.addControl(this.controlsImage);
+    this.texture.addControl(this.leftTextureContainer);
+    this.texture.addControl(this.rightTextureContainer);
 
     this.active = true;
 }
@@ -122,6 +168,8 @@ HUDView.prototype.turnOff = function()
     this.texture.removeControl(this.quitBut);
     this.texture.removeControl(this.settingsBut);
     this.texture.removeControl(this.controlsImage);
+    this.texture.removeControl(this.leftTextureContainer);
+    this.texture.removeControl(this.rightTextureContainer);
 
     this.active = false;
 }
@@ -140,7 +188,21 @@ HUDView.prototype.updateMaterial = function()
         console.error("Invalid selected block number: " + this.blockSelector.selected);
     }
 
-    this.textureImage.sourceLeft = (this.blockSelector.selected * 100);
+    this.mainTextureImage.sourceLeft = (this.blockSelector.selected * 100);
+
+    var leftImageIndex = this.blockSelector.selected - 1;
+    if(leftImageIndex == - 1)
+    {
+        leftImageIndex = noMaterials - 1;
+    }
+    this.leftTextureImage.sourceLeft = leftImageIndex * 100;
+
+    var rightImageIndex = this.blockSelector.selected + 1;
+    if(rightImageIndex == noMaterials)
+    {
+        rightImageIndex = 0;
+    }
+    this.rightTextureImage.sourceLeft = rightImageIndex * 100;
 }
 
 HUDView.prototype.lockPointerAllowed = function()
