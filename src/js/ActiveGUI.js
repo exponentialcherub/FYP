@@ -1,11 +1,11 @@
 const pKeyCode = 112;
 
-ActiveGUI = function(world, input, camera, settingsCallback, texture)
+ActiveGUI = function(world, input, camera, texture)
 {
     this.states = {NOVIEW : 0, HUD : 1, SETTINGS : 2, SAVE : 3, MAIN: 4};
 
     this.hud = new HUDView(world.blockSelector, texture, this.triggerStateChange.bind(this), this.states);
-    this.settingsView = new SettingsView(settingsCallback, input, camera, texture, this.triggerStateChange.bind(this), this.states);
+    this.settingsView = new SettingsView(world, input, camera, texture, this.triggerStateChange.bind(this), this.states);
     this.saveView = new SaveView(input, texture, world, this.triggerStateChange.bind(this), this.states);
 
     var _this = this;

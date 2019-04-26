@@ -89,6 +89,11 @@ World.prototype.load = function(projectId)
     this.projectId = projectId;
 }
 
+World.prototype.changeClickSetting = function(leftClickDestroy)
+{
+    this.chunkManager.leftClickDestroy = leftClickDestroy;
+}
+
 World.prototype.updateProjectValues = function(author, projectName, description)
 {
     this.author = author;

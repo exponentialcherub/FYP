@@ -2,6 +2,7 @@ ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
 {
     this.selector = blockSelector;
     this.scene = scene;
+    this.leftClickDestroy = true;
 
     var _this = this;
     window.addEventListener('mousedown', function(e){
@@ -12,7 +13,7 @@ ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
         }
 
         var normal = pickResult.getNormal(true, false);
-        if(e.button == 0)
+        if((_this.leftClickDestroy && e.button == 0) || (!_this.leftClickDestroy && e.button == 2))
         {
             // Left click, destroy.
             for(var i = 0; i < _this.noChunks; i++)
@@ -35,7 +36,7 @@ ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
                 }
             }
         }
-        else if(e.button == 2)
+        else if((_this.leftClickDestroy && e.button == 2) || (!_this.leftClickDestroy && e.button == 0))
         {
             // Right click, add block.
             for(var i = 0; i < _this.noChunks; i++)
@@ -60,14 +61,11 @@ ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
     var _this = this;
     window.addEventListener('keypress', function(e)
     {
-        console.log("hey!");
         if(e.keyCode ==  122)
         {
-            console.log("been trying to meet you");
             if(_this.lastChangePosition != undefined && _this.lastChangeIndex != undefined &&
                 _this.lastChangeType != undefined)
             {
-                console.log("OOOOOOOOOOOHHHHHHHHHHHHHH");
                 var i = _this.lastChangeIndex.x;
                 var j = _this.lastChangeIndex.y;
                 var k = _this.lastChangeIndex.z;

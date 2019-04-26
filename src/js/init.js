@@ -29,7 +29,7 @@ var initScene = function () {
     camera.inertia = 0.55;
     
     var world = new World(scene);
-    var gui = new GUI(updateCamera, camera, input, world);
+    var gui = new GUI(camera, input, world);
 
     // Request pointer lock
     canvas.addEventListener("click", function(e) {
@@ -186,10 +186,4 @@ var configureCameraInput = function(camera, input)
     input = new FreeCameraKeyboardCustomInput();
     camera.inputs.add(input);
     return input;
-}
-
-var updateCamera = function(input, camera, mouseSensitivity, speed)
-{
-    camera.angularSensibility = mouseSensitivity;
-    input.sensibility = speed;
 }

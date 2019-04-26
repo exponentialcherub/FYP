@@ -1,4 +1,4 @@
-GUI = function(settingsCallback, camera, input, world)
+GUI = function(camera, input, world)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
 
@@ -6,7 +6,7 @@ GUI = function(settingsCallback, camera, input, world)
 
     this.mainMenu = new MainMenu(this.guiTexture, world);
     this.mainMenu.turnOn(this.guiTexture);
-    this.activeGUI = new ActiveGUI(world, input, camera, settingsCallback, this.guiTexture);
+    this.activeGUI = new ActiveGUI(world, input, camera, this.guiTexture);
 
     this.state = this.states.MENU;
     this.stateChange = false;
