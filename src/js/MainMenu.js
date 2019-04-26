@@ -1,79 +1,74 @@
-MainMenu = function(texture, createProjectCallback, world)
+MainMenu = function(texture, world)
 {
+    this.states = {MAIN : 0, LOAD : 1, ACTIVE : 2};
+
     this.active = false;
-    this.buttonsActive = false;
 
-    var title = new BABYLON.GUI.TextBlock();
-    title.text = "Web Voxels";
-    title.color = "black";
-    title.fontSize = 48;
-    title.top = "-40%";
-    this.title = title;
+    this.mainMenuView = new MainMenuView(texture, world, this.triggerStateChange.bind(this), this.states);
+    this.loadProjectView = new LoadProjectView(texture, world, this.triggerStateChange.bind(this), this.states);
 
-    var createWorld = BABYLON.GUI.Button.CreateSimpleButton("createWorld", 'Create Project');
-    createWorld.width = '250px';
-    createWorld.height = '30px';
-    createWorld.color = "black";
-    createWorld.fontSize = 20;
-    createWorld.thickness = 0
-    createWorld.top = "-10%";
-    createWorld.background = "white";
-    this.createWorldBut = createWorld;
-
-    var loadWorld = BABYLON.GUI.Button.CreateSimpleButton("loadWorld", 'Load Project');
-    loadWorld.width = '250px';
-    loadWorld.height = '30px';
-    loadWorld.color = "black";
-    loadWorld.fontSize = 20;
-    loadWorld.thickness = 0;
-    loadWorld.top = "10%";
-    loadWorld.background = "white";
-    this.loadWorldBut = loadWorld;
-
-    this.loadProjectView = new LoadProjectView(texture, world);
-
-    var _this = this;
-    this.createWorldBut.onPointerUpObservable.add(function() {
-        _this.turnOff(texture);
-        createProjectCallback(world);
-    });
-    this.loadWorldBut.onPointerUpObservable.add(function() {
-        texture.removeControl(_this.createWorldBut);
-        texture.removeControl(_this.loadWorldBut);
-        texture.removeControl(_this.title);
-        _this.loadProjectView.turnOn(texture);
-        _this.buttonsActive = false;
-    });
+    this.state = this.states.MAIN;
+    this.stateChange = false;
 }
 
-MainMenu.prototype.turnOn = function(texture)
+MainMenu.prototype.turnOn = function()
 {
-    texture.addControl(this.title);
-    texture.addControl(this.createWorldBut);
-    texture.addControl(this.loadWorldBut);
+    this.mainMenuView.turnOn();
+    this.state = this.states.MAIN;
 
     this.active = true;
-    this.buttonsActive = true;
 }
 
-MainMenu.prototype.turnOff = function(texture)
+MainMenu.prototype.turnOff = function()
 {
-    texture.removeControl(this.title);
-    texture.removeControl(this.createWorldBut);
-    texture.removeControl(this.loadWorldBut);
+    // Figure out which one
+    if(this.mainMenuView.active)
+    {
+        this.mainMenuView.turnOff();
+    }
+    if(this.loadProjectView.active)
+    {
+        this.loadProjectView.turnOff();
+    }
 
     this.active = false;
-    this.buttonsActive = false
 }
 
-MainMenu.prototype.update = function(texture)
+MainMenu.prototype.update = function(stateChangeCallback)
 {
-    if(this.loadProjectView.exit)
+    if(this.stateChange)
     {
-        this.turnOn(texture);
+        if(this.mainMenuView.active)
+        {
+            this.mainMenuView.turnOff();
+        }
+        if(this.loadProjectView.active)
+        {
+            this.loadProjectView.turnOff();
+        }
+        
+        if(this.state == this.states.MAIN)
+        {
+            this.mainMenuView.turnOn();
+        }
+        if(this.state == this.states.LOAD)
+        {
+            this.loadProjectView.turnOn();
+        }
+        if(this.state == this.states.ACTIVE)
+        {
+            stateChangeCallback();
+        }
+
+        this.stateChange = false;
     }
-    if(this.active && !this.buttonsActive && !this.loadProjectView.active)
+}
+
+MainMenu.prototype.triggerStateChange = function(state)
+{
+    if(state != this.state)
     {
-        this.active = false;
+        this.stateChange = true;
+        this.state = state;
     }
 }

@@ -13,7 +13,6 @@ var initScene = function () {
     },false);
     
     var scene = new BABYLON.Scene(engine);
-    //scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.OimoJSPlugin());
     scene.collisionsEnabled = true;
     scene.clearColor = new BABYLON.Color3(135/255, 206/255, 235/255);
     
@@ -23,18 +22,19 @@ var initScene = function () {
 
     var input = configureCameraInput(camera);
     camera.checkCollisions = true;
+    
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     camera.angularSensibility = 7000;
     //camera.inertia = 0.1;
     
     var world = new World(scene);
-    var gui = new GUI(createWorld, updateCamera, camera, input, world);
+    var gui = new GUI(updateCamera, camera, input, world);
 
     // Request pointer lock
     canvas.addEventListener("click", function(e) {
         canvas.requestPointerLock = canvas.requestPointerLock || canvas.msRequestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-        if (canvas.requestPointerLock && world.inGame && !gui.buttonPressed())
+        if (canvas.requestPointerLock && gui.lockPointerAllowed())
         {
             canvas.requestPointerLock();
         }
@@ -57,11 +57,6 @@ var initScene = function () {
 
         gui.update(world, camera);
     });
-}
-
-var createWorld = function(world)
-{
-    world.createWorld();
 }
 
 // Configures camera to move in line with y-axis, easier to place blocks when moving. 

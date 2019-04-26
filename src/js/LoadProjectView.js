@@ -1,7 +1,7 @@
-LoadProjectView = function(texture, world)
+LoadProjectView = function(texture, world, stateChangeCallback, states)
 {
     this.active = false;
-    this.exit = false;
+    this.texture = texture;
 
     var title = new BABYLON.GUI.TextBlock();
     title.text = "Web Voxels";
@@ -115,36 +115,35 @@ LoadProjectView = function(texture, world)
     this.loadProjectBut.onPointerUpObservable.add(function() {
         if(_this.listOfProjects.length != 0 && _this.selectedProject != -1)
         {
+            stateChangeCallback(states.ACTIVE);
             world.load(_this.listOfProjects[_this.selectedProject].projectId);
-            _this.turnOff(texture);
         }
     });
     this.exitBut.onPointerUpObservable.add(function() {
-        _this.exit = true;
-        _this.turnOff(texture);
+        stateChangeCallback(states.MAIN);
     });
 }
 
-LoadProjectView.prototype.turnOn = function(texture)
+LoadProjectView.prototype.turnOn = function()
 {
-    texture.addControl(this.title);
-    texture.addControl(this.scrollView);
-    texture.addControl(this.infoContainer);
-    texture.addControl(this.loadProjectBut);
-    texture.addControl(this.exitBut);
+    this.texture.addControl(this.title);
+    this.texture.addControl(this.scrollView);
+    this.texture.addControl(this.infoContainer);
+    this.texture.addControl(this.loadProjectBut);
+    this.texture.addControl(this.exitBut);
 
     this.active = true;
 
     this.getProjects();
 }
 
-LoadProjectView.prototype.turnOff = function(texture)
+LoadProjectView.prototype.turnOff = function()
 {
-    texture.removeControl(this.title);
-    texture.removeControl(this.scrollView);
-    texture.removeControl(this.infoContainer);
-    texture.removeControl(this.loadProjectBut);
-    texture.removeControl(this.exitBut);
+    this.texture.removeControl(this.title);
+    this.texture.removeControl(this.scrollView);
+    this.texture.removeControl(this.infoContainer);
+    this.texture.removeControl(this.loadProjectBut);
+    this.texture.removeControl(this.exitBut);
 
     this.scrollView.removeControl(this.projectList);
     var panel2 = new BABYLON.GUI.StackPanel();
@@ -211,9 +210,4 @@ LoadProjectView.prototype.getProjects = function()
 
     xhttp.open("GET", "php/loadProjectList.php", true);
     xhttp.send();
-}
-
-LoadProjectView.prototype.updateListedProject = function()
-{
-    this.selectedProject.text = this.listOfProjects[this.projectCounter].projectName;   
 }

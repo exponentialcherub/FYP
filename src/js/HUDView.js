@@ -1,7 +1,7 @@
-HUD = function(blockSelector, texture, saveCallback, world)
+HUDView = function(blockSelector, texture, stateChangeCallback, states)
 {
+    this.texture = texture;
     this.active = false;
-    this.quit = false;
     this.buttonPressed = false;
 
     var crosshair = new BABYLON.GUI.Image("crosshair", "assets/mccrosshair.png");
@@ -83,20 +83,18 @@ HUD = function(blockSelector, texture, saveCallback, world)
     this.saveBut.onPointerUpObservable.add(function() {
         _this.buttonPressed = true;
 
-        //_this.turnOff(texture);
-        //saveCallback(texture);
-        _this.showSaveView = true;
+        stateChangeCallback(states.SAVE);
     });
     this.quitBut.onPointerUpObservable.add(function() {
-        _this.turnOff(texture);
-        _this.quit = true;
         _this.buttonPressed = true;
+
+        stateChangeCallback(states.MAIN);
     });
 
     this.settingsBut.onPointerUpObservable.add(function() {
         _this.buttonPressed = true;
 
-        _this.showSettings = true;
+        stateChangeCallback(states.SETTINGS);
     })
 
     this.prevSelected = 0; 
@@ -104,32 +102,31 @@ HUD = function(blockSelector, texture, saveCallback, world)
     this.updateMaterial();
 }
 
-HUD.prototype.turnOn = function(texture)
+HUDView.prototype.turnOn = function()
 {
-    texture.addControl(this.crosshair);
-    texture.addControl(this.textureContainer);
-    texture.addControl(this.saveBut);
-    texture.addControl(this.quitBut);
-    texture.addControl(this.settingsBut);
-    texture.addControl(this.controlsImage);
+    this.texture.addControl(this.crosshair);
+    this.texture.addControl(this.textureContainer);
+    this.texture.addControl(this.saveBut);
+    this.texture.addControl(this.quitBut);
+    this.texture.addControl(this.settingsBut);
+    this.texture.addControl(this.controlsImage);
 
     this.active = true;
-    this.quit = false;
 }
 
-HUD.prototype.turnOff = function(texture)
+HUDView.prototype.turnOff = function()
 {
-    texture.removeControl(this.crosshair);
-    texture.removeControl(this.textureContainer);
-    texture.removeControl(this.saveBut);
-    texture.removeControl(this.quitBut);
-    texture.removeControl(this.settingsBut);
-    texture.removeControl(this.controlsImage);
+    this.texture.removeControl(this.crosshair);
+    this.texture.removeControl(this.textureContainer);
+    this.texture.removeControl(this.saveBut);
+    this.texture.removeControl(this.quitBut);
+    this.texture.removeControl(this.settingsBut);
+    this.texture.removeControl(this.controlsImage);
 
     this.active = false;
 }
 
-HUD.prototype.updateMaterial = function()
+HUDView.prototype.updateMaterial = function()
 {
     if(this.prevSelected == this.blockSelector.selected)
     {
@@ -144,4 +141,11 @@ HUD.prototype.updateMaterial = function()
     }
 
     this.textureImage.sourceLeft = (this.blockSelector.selected * 100);
+}
+
+HUDView.prototype.lockPointerAllowed = function()
+{
+    var pressed = this.buttonPressed;
+    this.buttonPressed = false;
+    return !pressed;
 }

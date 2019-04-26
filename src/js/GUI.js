@@ -1,89 +1,73 @@
-const pKeyCode = 112;
-
-GUI = function(createProjectCallback, settingsCallback, camera, input, world)
+GUI = function(settingsCallback, camera, input, world)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
 
-    this.mainMenu = new MainMenu(this.guiTexture, createProjectCallback, world);
+    this.states = {MENU : 0, ACTIVE: 1};
+
+    this.mainMenu = new MainMenu(this.guiTexture, world);
     this.mainMenu.turnOn(this.guiTexture);
+    this.activeGUI = new ActiveGUI(world, input, camera, settingsCallback, this.guiTexture);
 
-    // For when a player is in world and wants to switch the HUD off.
-    this.showHud = true;
+    this.state = this.states.MENU;
+    this.stateChange = false;
 
-    this.settings = new Settings(settingsCallback, input, camera, this, this.guiTexture);
-    this.saveView = new SaveView(input, this.guiTexture, this, world);
-    this.hud = new HUD(world.blockSelector, this.guiTexture, this.saveView.turnOn, world);
-
-    var _this = this;
-    window.addEventListener("keypress", function(e)
-    {
-        if(e.keyCode == pKeyCode && world.inGame)
-        {
-            if(_this.hud.active)
-            {
-                _this.showHud = false;
-                _this.hud.turnOff(_this.guiTexture);
-            }
-            else
-            {
-                _this.showHud = true;
-                _this.hud.turnOn(_this.guiTexture);
-            }
-        }
-    });
+    this.mainMenu.turnOn();
 }
 
-GUI.prototype.update = function(world)
+GUI.prototype.update = function()
 {
-    if(this.hud.quit)
+    if(this.stateChange)
     {
-        this.mainMenu.turnOn(this.guiTexture);
-        this.hud.quit = false;
+        if(this.mainMenu.active)
+        {
+            this.mainMenu.turnOff();
+        }
+        if(this.activeGUI.active)
+        {
+            this.activeGUI.turnOff();
+        }
+
+        if(this.state == this.states.MENU)
+        {
+            this.mainMenu.turnOn();
+        }
+        if(this.state == this.states.ACTIVE)
+        {
+            this.activeGUI.turnOn();
+        }
+
+        this.stateChange = false;
     }
 
-    if(!this.mainMenu.active && !this.hud.active && this.showHud)
-    {
-        this.hud.turnOn(this.guiTexture);
-        world.inGame = true;
-    }
+    this.mainMenu.update(this.triggerStateChange.bind(this));
+    this.activeGUI.update(this.triggerStateChange.bind(this));
+}
 
-    if(this.hud.active)
-    {
-        this.hud.updateMaterial();
-    }
-
-    if(this.hud.showSettings)
-    {
-        this.showHud = false;
-        this.hud.showSettings = false;
-        
-        this.hud.turnOff(this.guiTexture);
-        this.settings.turnOn(this.guiTexture);
-        world.inGame = false;
-    }
-
-    if(this.hud.showSaveView)
-    {
-        this.saveView.updateTextValues(world);
-        this.showHud = false;
-        this.hud.showSaveView = false;
-        
-        this.hud.turnOff(this.guiTexture);
-        this.saveView.turnOn(this.guiTexture);
-        world.inGame = false;
-    }
+GUI.prototype.triggerStateChange = function()
+{
+    this.stateChange = true;
     
-    this.mainMenu.update(this.guiTexture);
+    if(this.state == this.states.MENU)
+    {
+        this.state = this.states.ACTIVE;
+    }
+    else if(this.state == this.states.ACTIVE)
+    {
+        this.state = this.states.MENU;
+    }
 }
 
 GUI.prototype.quit = function()
 {
-    return this.hud.quit;
+    return this.stateChange && this.state == this.states.MENU;
 }
 
-GUI.prototype.buttonPressed = function()
+GUI.prototype.lockPointerAllowed = function()
 {
-    var ret = this.hud.buttonPressed;
-    this.hud.buttonPressed = false;
-    return ret;
+    if(this.mainMenu.active)
+    {
+        return false;
+    }
+
+    return this.activeGUI.lockPointerAllowed();
 }

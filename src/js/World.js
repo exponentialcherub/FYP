@@ -1,6 +1,5 @@
 World = function(scene)
 {
-    this.inGame = false;
     this.scene = scene;
     this.blockSelector = new BlockSelector();
 }
@@ -20,8 +19,6 @@ createWorldMaterial = function(scene)
 World.prototype.createWorld = function()
 {
     this.chunkManager = new ChunkManager(this.blockSelector, this.scene, createWorldMaterial(this.scene), 128, 32);
-
-    this.inGame = true;
     
     if(this.projectId != undefined)
     {
@@ -79,7 +76,6 @@ World.prototype.load = function(projectId)
         this.chunkManager = new ChunkManager(this.blockSelector, this.scene);
         this.chunkManager.loadChunksFromJSON(createWorldMaterial(), saveJson);
         this.updateProjectValues(saveJson.author, saveJson.projectName, saveJson.description);
-        this.inGame = true;
         console.log("Project loaded succesfully.");
     }
     else
@@ -101,5 +97,4 @@ World.prototype.dispose = function()
 {
     this.chunkManager.dispose();
     this.chunkManager = null;
-    this.inGame = false;
 }

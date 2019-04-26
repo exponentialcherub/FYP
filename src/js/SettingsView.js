@@ -1,7 +1,8 @@
-Settings = function(updateSettings, input, camera, gui, texture)
+SettingsView = function(updateSettings, input, camera, texture, stateChangeCallback, states)
 {
     this.active = false;
     this.input = input;
+    this.texture = texture;
 
     var _this = this;
 
@@ -68,25 +69,24 @@ Settings = function(updateSettings, input, camera, gui, texture)
     done.onPointerUpObservable.add(function() {
         updateSettings(input, camera, _this.mouseSensitivity, _this.speed);
         
-        _this.turnOff(texture);
-        gui.showHud = true;
+        stateChangeCallback(states.HUD);
     });
     this.doneBut = done;
 }
 
-Settings.prototype.turnOn = function(texture)
+SettingsView.prototype.turnOn = function()
 {
-    texture.addControl(this.panel);
-    texture.addControl(this.doneBut);
+    this.texture.addControl(this.panel);
+    this.texture.addControl(this.doneBut);
     this.input.detachControl(window);
 
     this.active = true;
 }
 
-Settings.prototype.turnOff = function(texture)
+SettingsView.prototype.turnOff = function()
 {
-    texture.removeControl(this.panel);
-    texture.removeControl(this.doneBut);
+    this.texture.removeControl(this.panel);
+    this.texture.removeControl(this.doneBut);
     this.input.attachControl(window);
 
     this.active = false;

@@ -1,7 +1,9 @@
-SaveView = function(input, texture, gui, world)
+SaveView = function(input, texture, world, stateChangeCallback, states)
 {
     this.active = false;
+    this.texture = texture;
     this.cameraInput = input;
+    this.world = world;
 
     var panel = new BABYLON.GUI.StackPanel();
     panel.width = "220px";
@@ -62,30 +64,30 @@ SaveView = function(input, texture, gui, world)
         world.updateProjectValues(_this.authorIn.text, _this.projectNameIn.text, _this.descriptionIn.text);
         world.save();
 
-        _this.turnOff(texture);
-
-        gui.showHud = true;
+        stateChangeCallback(states.HUD);
     });
 }
 
-SaveView.prototype.turnOn = function(texture)
+SaveView.prototype.turnOn = function()
 {
-    texture.addControl(this.panel);
+    this.texture.addControl(this.panel);
     this.cameraInput.detachControl(window);
 
     this.active = true;
 }
 
-SaveView.prototype.turnOff = function(texture)
+SaveView.prototype.turnOff = function()
 {
-    texture.removeControl(this.panel);
+    this.texture.removeControl(this.panel);
     this.cameraInput.attachControl(window);
 
     this.active = false;
 }
 
-SaveView.prototype.updateTextValues = function(world)
+SaveView.prototype.updateTextValues = function()
 {
+    var world = this.world;
+
     if(world.author != undefined)
     {
         this.authorIn.text = world.author;
