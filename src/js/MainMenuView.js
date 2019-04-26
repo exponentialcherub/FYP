@@ -1,3 +1,5 @@
+// The main menu view. Has two buttons, one to create a new project and another to load a project.
+
 MainMenuView = function(texture, world, stateChangeCallback, states)
 {
     this.texture = texture;

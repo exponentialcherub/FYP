@@ -1,5 +1,7 @@
 <?php 
 
+// Loads project with name sent by client.
+
 $post = file_get_contents('php://input');
 $data = json_decode($post);
 $dir = "C:\\Users\\liams\\OneDrive\\Documents\\FYP\\projects\\" . $data->filename;

@@ -1,3 +1,5 @@
+// This controls main menu guis which includes the main menu itself and the load project screen.
+
 MainMenu = function(texture, world)
 {
     this.states = {MAIN : 0, LOAD : 1, ACTIVE : 2};

@@ -7,6 +7,7 @@ if (is_dir($dir))
 {
     if ($dh = opendir($dir)){
         $i = 0;
+        // Iterate through each project in the directory and return information on all of them.
         while (($file = readdir($dh)) !== false){
             if(!is_dir($file))
             {
@@ -29,7 +30,5 @@ if (is_dir($dir))
 }
 
 echo(json_encode($projects));
-
-// TODO: Add more data to response from file, currently only file name.
 
 ?>

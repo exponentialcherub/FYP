@@ -1,3 +1,6 @@
+// This gui shows any configurable settings. Settings are updated once done is selected.
+// Settings should be put into a model and accessed that way instead of changing values directly. (future work)
+
 SettingsView = function(world, input, camera, texture, stateChangeCallback, states)
 {
     this.active = false;

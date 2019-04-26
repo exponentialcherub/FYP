@@ -1,3 +1,5 @@
+// This shows a form of sorts to enter information when saving a project.
+
 SaveView = function(input, texture, world, stateChangeCallback, states)
 {
     this.active = false;
@@ -86,6 +88,7 @@ SaveView.prototype.turnOff = function()
     this.active = false;
 }
 
+// Gets the current project's information from World.
 SaveView.prototype.updateTextValues = function()
 {
     var world = this.world;

@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function () {
     initScene();
 });
 
+// The entry point of the application, setups Babylon including the engine, scene, camera and light.
+// Some of these should be abstracted out to allow for configurable cameras/lighting snd potentially multiple
+// scenes.
 var initScene = function () {
     var canvas = document.getElementById('canvas');
     var engine = new BABYLON.Engine(canvas, true);
@@ -25,7 +28,9 @@ var initScene = function () {
     
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
+    // Mouse sensitivity
     camera.angularSensibility = 7000;
+    // Acceleration of camera
     camera.inertia = 0.55;
     
     var world = new World(scene);
@@ -40,6 +45,8 @@ var initScene = function () {
         }
     }, false);
 
+    // This light covers the whole scene, should consider adding configurable lighting. This would allow
+    // users to model night/day and give a better look at their structures in general.
     var light = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
     light.diffuse = new BABYLON.Color3(1, 1, 1);
 	light.specular = new BABYLON.Color3(1, 1, 1);
@@ -47,9 +54,7 @@ var initScene = function () {
 
     engine.runRenderLoop(function () {
         scene.render();
-
-        // Render loop order important here! This is due to hud.quit value change in gui.update().
-        // TODO: Maybe be better to does this via an event? Amongst other gui events.
+        
         if(gui.quit())
         {
             world.dispose();

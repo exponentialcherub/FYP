@@ -1,3 +1,7 @@
+// This represents a chunk, which is a cube of blocks, the size of which is specified in the constructor.
+// It contains functionality for meshing all the blocks in the chunk into one mesh, regenerating each
+// time a block is added/removed.
+
 Chunk = function(id, blockId, chunkPosition, scene, material, size) 
 {
     this.id = id;
@@ -25,9 +29,11 @@ Chunk = function(id, blockId, chunkPosition, scene, material, size)
                 var position = chunkPosition.add(new BABYLON.Vector3(i, j, k));
                 
                 this.blocks[i][j][k] = new Block(position, "" + i + j + k, blockId, true);
+
+                // Only render one layer of blocks to reduce rendering time as there is no need to dig
+                // down. Can be changed in the future to be a preference.
                 if(position.y > -size)
                 {
-                    // Temporary to only populate half of chunk so we can build on. May end up doing this anyway.
                     this.blocks[i][j][k].setInactive();
                 }
             }
@@ -40,6 +46,10 @@ Chunk = function(id, blockId, chunkPosition, scene, material, size)
 Chunk.prototype.hasBlock = function(position, normal)
 {
     var x, y, z;
+
+    // The position given is an intersection point most likely, so we must round appropriately
+    // according to the normal of the intersected face in order to get an accurate block position.
+    // This is blocks only occur on round numbers because they are voxels and are indexed as so.
 
     if(normal.x > 0)
     {
@@ -87,6 +97,7 @@ Chunk.prototype.hasBlock = function(position, normal)
 
 Chunk.prototype.addBlock = function(position, blockId)
 {
+    // Round to get index.
     var i = Math.round(position.x) - this.min.x;
     var j = Math.round(position.y) - this.min.y;
     var k = Math.round(position.z) - this.min.z;
@@ -98,6 +109,7 @@ Chunk.prototype.addBlock = function(position, blockId)
 
 Chunk.prototype.removeBlock = function(position)
 {
+    // Round to get index.
     var i = Math.round(position.x) - this.min.x;
     var j = Math.round(position.y) - this.min.y;
     var k = Math.round(position.z) - this.min.z;
@@ -109,6 +121,7 @@ Chunk.prototype.removeBlock = function(position)
 
 Chunk.prototype.getBlockType = function(position)
 {
+    // Round to get index.
     var i = Math.round(position.x) - this.min.x;
     var j = Math.round(position.y) - this.min.y;
     var k = Math.round(position.z) - this.min.z;
@@ -116,6 +129,8 @@ Chunk.prototype.getBlockType = function(position)
     return this.blocks[i][j][k].type;
 }
 
+// This checks if a block can be seen by a user, i.e. if it is active and is not completely
+// surrounded by blocks.
 Chunk.prototype.checkBlockVisibility = function(i, j, k)
 {
     if(i < 0 || j < 0 || k < 0 || i > this.size - 1 || j > this.size - 1 || k > this.size - 1)
@@ -144,6 +159,7 @@ Chunk.prototype.checkBlockVisibility = function(i, j, k)
     }
 }
 
+// Generates the chunk mesh based on the active blocks and their types. More optimisation can be done here.
 Chunk.prototype.generateMesh = function()
 {
     var normalsSource = [
@@ -173,6 +189,7 @@ Chunk.prototype.generateMesh = function()
                     // TODO: Don't need to add all faces, only visible ones. Maybe easier to hold face info in Block, then
                     // can call isFaceVisible, etc.. Only need each vertex once and reuse index.
 
+                    // Calculate faces based on block position.
                     var pos = this.min.add(new BABYLON.Vector3(i, j, k));
 
                     var vec0 = [pos.x - 0.5, pos.y - 0.5, pos.z - 0.5]; 
@@ -223,6 +240,7 @@ Chunk.prototype.generateMesh = function()
                         Array.prototype.push.apply(normals, normalsSource[p]);
                         Array.prototype.push.apply(normals, normalsSource[p]);
 
+                        // Calculate texture atlas coordinates based on the block type.
                         var x1 = textureIndex / noMaterials;
                         var x2 = (textureIndex + 1) / noMaterials;
                         
@@ -255,6 +273,7 @@ Chunk.prototype.generateMesh = function()
     this.mesh.checkCollisions = true;
 }
 
+// Disposes of old mesh and regenerates new one.
 Chunk.prototype.regenerateMesh = function()
 {
     var name = this.mesh.name;
@@ -268,6 +287,7 @@ Chunk.prototype.regenerateMesh = function()
     this.generateMesh();
 }
 
+// Reloads chunk from json file sent from the server. 
 Chunk.prototype.loadChunkFromJSON = function(scene, material, jsonObj)
 {
     this.size = jsonObj.size;
@@ -313,7 +333,7 @@ Chunk.prototype.toJSON = function()
     var tempBlocks = new Array();
     var tmpI = 0;
 
-    // Only save active blocks.
+    // Only save active blocks to save memory.
     for(var i = 0; i < this.size; i++)
     {
         for(var j = 0; j < this.size; j++)

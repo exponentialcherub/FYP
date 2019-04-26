@@ -1,3 +1,5 @@
+// Top-level gui class to control other gui components.
+
 GUI = function(camera, input, world)
 {
     this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
@@ -43,6 +45,7 @@ GUI.prototype.update = function()
     this.activeGUI.update(this.triggerStateChange.bind(this));
 }
 
+// Callback passed into other gui components to trigger change.
 GUI.prototype.triggerStateChange = function()
 {
     this.stateChange = true;

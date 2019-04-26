@@ -1,5 +1,7 @@
 <?php 
 
+// Simply receives a json project from a client and saves it to file.
+
 $post = file_get_contents('php://input');
 $data = json_decode($post);
 $projectId = "";

@@ -1,3 +1,5 @@
+// Block objects just hold information about a block.
+
 Block = function(position, id, blockType, active) 
 {
     this.position = new BABYLON.Vector3(position.x, position.y, position.z);

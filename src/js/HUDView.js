@@ -1,3 +1,6 @@
+// The heads-up-display when users are editing their projects. Displays the current material selected, save
+// and quit options, controls and a settings button.
+
 HUDView = function(blockSelector, texture, stateChangeCallback, states)
 {
     this.texture = texture;

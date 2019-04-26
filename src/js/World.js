@@ -1,3 +1,6 @@
+// World is reponsible for the creation of the chunk manager and is where the loading and
+// saving of projects takes place.
+
 World = function(scene)
 {
     this.scene = scene;
@@ -22,6 +25,7 @@ World.prototype.createWorld = function()
     
     if(this.projectId != undefined)
     {
+        // Fresh project so reset information.
         delete this.projectId;
         delete this.author;
         delete this.projectName;
@@ -29,6 +33,7 @@ World.prototype.createWorld = function()
     }
 }
 
+// Sends the project to the server so it can be stored.
 World.prototype.save = function()
 {
     var chunksObj = this.chunkManager.toJSON();
@@ -44,6 +49,7 @@ World.prototype.save = function()
 
     var chunks = JSON.stringify(chunksObj);
 
+    // Send project to server, the server returns the project id.
     var _this = this;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -63,6 +69,7 @@ World.prototype.save = function()
     xhttp.send(chunks);
 }
 
+// Requests the server to send a project with a particular id.
 World.prototype.load = function(projectId)
 {
     var xhttp = new XMLHttpRequest();
@@ -76,6 +83,8 @@ World.prototype.load = function(projectId)
     {
         console.log("Save file received. Loading Project.");
         var saveJson = JSON.parse(xhttp.responseText);
+
+        // Recreate chunks from json.
         this.chunkManager = new ChunkManager(this.blockSelector, this.scene);
         this.chunkManager.loadChunksFromJSON(createWorldMaterial(), saveJson);
         this.updateProjectValues(saveJson.author, saveJson.projectName, saveJson.description);

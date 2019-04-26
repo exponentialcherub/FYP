@@ -1,5 +1,9 @@
 const pKeyCode = 112;
 
+// This class controls the gui components that appear when a project is opened, the 'active' part of the application.
+// There are the five possible states that can be seen below, NOVIEW means none of them are showing and MAIN indicates
+// that the main menu should currently be showing which is controlled seperately.
+
 ActiveGUI = function(world, input, camera, texture)
 {
     this.states = {NOVIEW : 0, HUD : 1, SETTINGS : 2, SAVE : 3, MAIN: 4};

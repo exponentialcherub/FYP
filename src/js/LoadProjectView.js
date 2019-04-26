@@ -1,3 +1,6 @@
+// This view shows all the projects on the server and displays information on a particular project if 
+// selected which can then be loaded.
+
 LoadProjectView = function(texture, world, stateChangeCallback, states)
 {
     this.active = false;
@@ -36,42 +39,31 @@ LoadProjectView = function(texture, world, stateChangeCallback, states)
     projectBlock.color = "black";
     projectBlock.width = "500px";
     projectBlock.height = "50px";
-    //projectBlock.paddingTop = "10px";
-    //projectBlock.paddingBottom = "10px";
     projectBlock.text = "Name: ";
-    //projectBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     this.projectBlock = projectBlock;
 
     var authorBlock = new BABYLON.GUI.TextBlock();
     authorBlock.color = "black";
     authorBlock.width = "500px";
     authorBlock.height = "50px";
-    //authorBlock.paddingTop = "10px";
-    //authorBlock.paddingBottom = "10px";
     authorBlock.text = "Author: ";
-    //authorBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     this.authorBlock = authorBlock;
 
     var descriptionBlock = new BABYLON.GUI.TextBlock();
     descriptionBlock.color = "black";
     descriptionBlock.width = "500px";
     descriptionBlock.height = "50px";
-    //descriptionBlock.paddingTop = "10px";
-    //descriptionBlock.paddingBottom = "10px";
     descriptionBlock.text = "Description: ";
-    //descriptionBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     descriptionBlock.textWrapping = true;
     this.descriptionBlock = descriptionBlock;
 
-    var dateBlock = new BABYLON.GUI.TextBlock();
+    // To be added.
+    /*var dateBlock = new BABYLON.GUI.TextBlock();
     dateBlock.color = "black";
     dateBlock.width = "500px";
     dateBlock.height = "50px";
-    //dateBlock.paddingTop = "10px";
-    //dateBlock.paddingBottom = "10px";
     dateBlock.text = "Date: ";
-    //dateBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    this.dateBlock = dateBlock;
+    this.dateBlock = dateBlock;*/
 
     var panel1 = new BABYLON.GUI.StackPanel();
     this.infoPanel = panel1;
@@ -80,7 +72,7 @@ LoadProjectView = function(texture, world, stateChangeCallback, states)
     this.infoPanel.addControl(this.projectBlock);
     this.infoPanel.addControl(this.authorBlock);
     this.infoPanel.addControl(this.descriptionBlock);
-    this.infoPanel.addControl(this.dateBlock);
+    //this.infoPanel.addControl(this.dateBlock);
     this.infoContainer.addControl(this.infoPanel);
 
     var panel2 = new BABYLON.GUI.StackPanel();
@@ -180,6 +172,7 @@ LoadProjectView.prototype.addProjectToList = function(projectName, i)
     this.projectList.addControl(header); 
 }
 
+// Asks the server for information on all projects which is then displayed.
 LoadProjectView.prototype.getProjects = function()
 {
     var _this = this;
