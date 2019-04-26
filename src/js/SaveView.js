@@ -74,6 +74,8 @@ SaveView.prototype.turnOn = function()
     this.cameraInput.detachControl(window);
 
     this.active = true;
+
+    this.updateTextValues();
 }
 
 SaveView.prototype.turnOff = function()

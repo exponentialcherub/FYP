@@ -17,4 +17,6 @@ $myfile = fopen("C:\\Users\\liams\\OneDrive\\Documents\\FYP\\projects\\" . $proj
 fwrite($myfile, $post);
 fclose($myfile);
 
+echo $projectId;
+
 ?>

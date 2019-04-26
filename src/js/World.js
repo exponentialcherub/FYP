@@ -44,11 +44,14 @@ World.prototype.save = function()
 
     var chunks = JSON.stringify(chunksObj);
 
+    var _this = this;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) 
         {
             console.log("Project sent to server.");
+
+            _this.projectId = xhttp.responseText;
         }
         else if(this.status == 404)
         {

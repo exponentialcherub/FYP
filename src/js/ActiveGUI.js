@@ -94,7 +94,6 @@ ActiveGUI.prototype.update = function(stateChangeCallback)
     }
 
     this.hud.updateMaterial();
-    this.saveView.updateTextValues();
 }
 
 ActiveGUI.prototype.triggerStateChange = function(state)
