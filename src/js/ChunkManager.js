@@ -24,6 +24,10 @@ ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
                         var ret = _this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
                         if(ret.result)
                         {
+                            _this.lastChangeBlockType = _this.chunks[i][j][k].getBlockType(ret.pos);
+                            _this.lastChangeType = 0;
+                            _this.lastChangeIndex = new BABYLON.Vector3(i, j, k);
+                            _this.lastChangePosition = new BABYLON.Vector3(ret.pos.x, ret.pos.y, ret.pos.z);
                             _this.chunks[i][j][k].removeBlock(ret.pos);
                             break;
                         }
@@ -48,6 +52,37 @@ ChunkManager = function(blockSelector, scene, material, worldSize, chunkSize)
                         }
                     }
                 }
+            }
+        }
+    });
+
+    // Listen for undo action
+    var _this = this;
+    window.addEventListener('keypress', function(e)
+    {
+        console.log("hey!");
+        if(e.keyCode ==  122)
+        {
+            console.log("been trying to meet you");
+            if(_this.lastChangePosition != undefined && _this.lastChangeIndex != undefined &&
+                _this.lastChangeType != undefined)
+            {
+                console.log("OOOOOOOOOOOHHHHHHHHHHHHHH");
+                var i = _this.lastChangeIndex.x;
+                var j = _this.lastChangeIndex.y;
+                var k = _this.lastChangeIndex.z;
+                if(_this.lastChangeType == 0 && _this.lastChangeBlockType != undefined)
+                {
+                    _this.chunks[i][j][k].addBlock(_this.lastChangePosition, _this.lastChangeBlockType);
+                    delete _this.lastChangeBlockType;
+                }
+                else if(_this.lastChangeType == 1)
+                {
+                    _this.chunks[i][j][k].removeBlock(_this.lastChangePosition);
+                }
+                delete _this.lastChangePosition;
+                delete _this.lastChangeIndex;
+                delete _this.lastChangeType;
             }
         }
     });
@@ -110,55 +145,6 @@ ChunkManager.prototype.loadChunksFromJSON = function(material, jsonObj)
 
 }
 
-ChunkManager.prototype.clickHandler = function(e)
-{
-    var pickResult = this.scene.pick(window.innerWidth/2, window.innerHeight/2); 
-    if(!pickResult.hit)
-    {
-        return;
-    }
-
-    var normal = pickResult.getNormal(true, false);
-    if(e.button == 0)
-    {
-        // Left click, destroy.
-        for(var i = 0; i < this.noChunks; i++)
-        {
-            for(var j = 0; j < this.noChunks; j++)
-            {
-                for(var k = 0; k < this.noChunks; k++)
-                {
-                    var ret = this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
-                    if(ret.result)
-                    {
-                        this.chunks[i][j][k].removeBlock(ret.pos);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    else if(e.button == 2)
-    {
-        // Right click, add block.
-        for(var i = 0; i < this.noChunks; i++)
-        { 
-            for(var j = 0; j < this.noChunks; j++)
-            {
-                for(var k = 0; k < this.noChunks; k++)
-                {
-                    var ret = this.chunks[i][j][k].hasBlock(pickResult.pickedPoint, normal); 
-                    if(ret.result)
-                    {
-                        this.addBlock(ret.pos, normal);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-}
-
 ChunkManager.prototype.addBlock = function(blockPosition, normal)
 {
     var newPosition = new BABYLON.Vector3(blockPosition.x, blockPosition.y, blockPosition.z);
@@ -177,6 +163,9 @@ ChunkManager.prototype.addBlock = function(blockPosition, normal)
                 var ret = this.chunks[i][j][k].hasBlock(newPosition, normal);
                 if(ret.result)
                 {
+                    this.lastChangeType = 1;
+                    this.lastChangeIndex = new BABYLON.Vector3(i, j, k);
+                    this.lastChangePosition = new BABYLON.Vector3(newPosition.x, newPosition.y, newPosition.z);
                     this.chunks[i][j][k].addBlock(newPosition, this.selector.selected);
                 }
             }

@@ -21,7 +21,6 @@ MainMenu.prototype.turnOn = function()
 
 MainMenu.prototype.turnOff = function()
 {
-    // Figure out which one
     if(this.mainMenuView.active)
     {
         this.mainMenuView.turnOff();

@@ -107,6 +107,15 @@ Chunk.prototype.removeBlock = function(position)
     this.regenerateMesh();
 }
 
+Chunk.prototype.getBlockType = function(position)
+{
+    var i = Math.round(position.x) - this.min.x;
+    var j = Math.round(position.y) - this.min.y;
+    var k = Math.round(position.z) - this.min.z;
+
+    return this.blocks[i][j][k].type;
+}
+
 Chunk.prototype.checkBlockVisibility = function(i, j, k)
 {
     if(i < 0 || j < 0 || k < 0 || i > this.size - 1 || j > this.size - 1 || k > this.size - 1)
