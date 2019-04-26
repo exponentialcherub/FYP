@@ -26,7 +26,7 @@ var initScene = function () {
     // Player size
     camera.ellipsoid = new BABYLON.Vector3(0.25, 1, 0.25);
     camera.angularSensibility = 7000;
-    //camera.inertia = 0.1;
+    camera.inertia = 0.55;
     
     var world = new World(scene);
     var gui = new GUI(updateCamera, camera, input, world);

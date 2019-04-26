@@ -12,10 +12,10 @@ SettingsView = function(updateSettings, input, camera, texture, stateChangeCallb
     panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     this.panel = panel;
 
-    this.mouseSensitivity = 30000;
+    this.mouseSensitivity = camera.angularSensibility;
 
     var mouseSensitivitySliderHeader = new BABYLON.GUI.TextBlock();
-    mouseSensitivitySliderHeader.text = "Mouse Sensitivity: " + 3 * this.mouseSensitivity / 10000;
+    mouseSensitivitySliderHeader.text = "Mouse Sensitivity: " + 3 * (55000 - this.mouseSensitivity) / 10000;
     mouseSensitivitySliderHeader.height = "30px";
     mouseSensitivitySliderHeader.color = "white";
     this.mouseSensitivitySliderHeader = mouseSensitivitySliderHeader;
@@ -24,7 +24,7 @@ SettingsView = function(updateSettings, input, camera, texture, stateChangeCallb
     var mouseSensitivitySlider = new BABYLON.GUI.Slider();
     mouseSensitivitySlider.minimum = 20000;
     mouseSensitivitySlider.maximum = 50000;
-    mouseSensitivitySlider.value = this.mouseSensitivity;
+    mouseSensitivitySlider.value = 55000 - this.mouseSensitivity;
     mouseSensitivitySlider.height = "20px";
     mouseSensitivitySlider.width = "200px";
     mouseSensitivitySlider.top = "-10%";
@@ -35,7 +35,7 @@ SettingsView = function(updateSettings, input, camera, texture, stateChangeCallb
     this.mouseSensitivitySlider = mouseSensitivitySlider;
     panel.addControl(this.mouseSensitivitySlider);
 
-    this.speed = 0.25;
+    this.speed = input.sensibility;
 
     var speedSliderHeader = new BABYLON.GUI.TextBlock();
     speedSliderHeader.text = "Speed: " + this.speed * 20;
@@ -58,6 +58,29 @@ SettingsView = function(updateSettings, input, camera, texture, stateChangeCallb
     this.speedSlider = speedSlider;
     panel.addControl(this.speedSlider);
 
+    this.smoothness = camera.inertia;
+
+    var smoothnessSliderHeader = new BABYLON.GUI.TextBlock();
+    smoothnessSliderHeader.text = "Camera Smoothness: " + this.smoothness;
+    smoothnessSliderHeader.height = "30px";
+    smoothnessSliderHeader.color = "white";
+    this.smoothnessSliderHeader = smoothnessSliderHeader;
+    panel.addControl(this.smoothnessSliderHeader); 
+
+    var smoothnessSlider = new BABYLON.GUI.Slider();
+    smoothnessSlider.minimum = 0.00;
+    smoothnessSlider.maximum = 1;
+    smoothnessSlider.value = this.smoothness;
+    smoothnessSlider.height = "20px";
+    smoothnessSlider.width = "200px";
+    smoothnessSlider.top = "10%";
+    smoothnessSlider.onValueChangedObservable.add(function(value) {
+        smoothnessSliderHeader.text = "Camera Smoothness: " + value;
+        _this.smoothness = value;
+    });
+    this.smoothnessSlider = smoothnessSlider;
+    panel.addControl(this.smoothnessSlider);
+
     var done = BABYLON.GUI.Button.CreateSimpleButton("done", 'Done');
     done.width = '250px';
     done.height = '30px';
@@ -67,8 +90,11 @@ SettingsView = function(updateSettings, input, camera, texture, stateChangeCallb
     done.top = "30%";
     done.background = "white";
     done.onPointerUpObservable.add(function() {
-        updateSettings(input, camera, _this.mouseSensitivity, _this.speed);
-        
+        // Should not be changing directly but this will do for now.
+        camera.angularSensibility = _this.mouseSensitivity;
+        input.sensibility = _this.speed;
+        camera.inertia = _this.smoothness;
+console.log(camera.angularSensibility);
         stateChangeCallback(states.HUD);
     });
     this.doneBut = done;
